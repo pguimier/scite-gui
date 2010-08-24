@@ -329,7 +329,7 @@ static int cf_editor_get_translation(lua_State *L) {
 //!-start-[GetSidebarHandle]
 static int cf_scite_get_sidebar_handle(lua_State *L) {
         //const char *s = luaL_checkstring(L, 1);
-        lua_pushinteger(L, host->GetSidebarHandle());
+        lua_pushlightuserdata(L, host->GetSidebarHandle());
         return 1;
 }
 //!-end-[GetSidebarHandle]

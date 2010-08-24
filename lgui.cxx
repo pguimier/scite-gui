@@ -16,7 +16,7 @@ extern "C" {
 #include <stdint.h>
 #include <string.h>
 
-int SidebarHandle;
+void *SidebarHandle;
 
 
 
@@ -51,7 +51,7 @@ void dispatch_ref(lua_State* L,int idx, int ival) //call function
 class LuaPageControl:public LuaControl,public CPageControl
 {
   private:
-    //GtkWidget *PageControl;
+  
   protected:
   
   public:
@@ -68,46 +68,56 @@ void free_children(GtkContainer *c)
   for (int i=g_list_length(List)-1;i>=0;i--)
   {
     GtkWidget *w = GTK_WIDGET(g_list_nth( List, i )->data);
+    //first get pointer to class
+    void *pt=g_object_get_data (G_OBJECT(w),"ClassPointer");
+    if (pt) g_print("pointer set ;)");
     gtk_widget_destroy(w);
   }
 }
 
 static int do_InitSidebar(lua_State *L)
 {
- SidebarHandle=luaL_checkinteger(L,1);
- g_print("Sidebar-Handle: 0x%x (PageControl-Class)\n",SidebarHandle);
- 
- free_children(GTK_CONTAINER(SidebarHandle));
+  SidebarHandle=lua_touserdata(L,1);
+  g_print("Sidebar-Handle: 0x%x (PageControl-Class)\n",int(SidebarHandle));
+  
+  free_children(GTK_CONTAINER(SidebarHandle));
 
- return 1;
-}
-
-static int do_PageControlAddPage(lua_State *L)
-{
- int iPageControl=luaL_checkinteger(L,1);
- const char *caption=luaL_checkstring(L,2);
- 
- g_print("Adding Page To Pagecontrol (0x%x) with label '%s'...\n",iPageControl,caption);
-
- GtkWidget *label=gtk_accel_label_new(caption);
- GtkWidget *vbox=gtk_vbox_new(2,false);
- gtk_widget_show(vbox);
- gtk_notebook_insert_page(GTK_NOTEBOOK(iPageControl),vbox,label,-1);
- 
- lua_pushinteger(L,int(vbox));//put handle of content to stack
- return 1;//return 1 value (handle)
+  return 1;
 }
 
 static int do_CreatePageControl(lua_State *L)
 {
- int iParent=luaL_checkinteger(L,1);
- 
- g_print("Adding Pagecontrol to Parent 0x%x...\n",iParent);
+  gpointer iParent=lua_touserdata(L,1);
+  
+  g_print("Adding Pagecontrol to Parent 0x%x...\n",int(iParent));
 
- LuaPageControl PageControl(L,GTK_WIDGET(iParent));
+  LuaPageControl *PageControl=new LuaPageControl(L,GTK_WIDGET(iParent));
+  /*
+  GtkWidget *button=gtk_button_new_with_label("Test");
+  gtk_widget_show(button);
+  gtk_box_pack_start(GTK_BOX(iParent),button, TRUE, TRUE, 0);
+  
+  button=gtk_button_new_with_label("Test2");
+  gtk_widget_show(button);
+  gtk_box_pack_start(GTK_BOX(iParent),button, TRUE, TRUE, 0);
+  */
+  lua_pushlightuserdata(L,PageControl);//put pointer of Pagecontrol to stack
+  return 1;//return 1 value (handle)
+}
+
+static int do_PageControlAddPage(lua_State *L)
+{
+  gpointer iPageControl=lua_touserdata(L,1);
+  const char *caption=luaL_checkstring(L,2);
  
- lua_pushinteger(L,int(&PageControl));//put handle of content to stack
- return 1;//return 1 value (handle)
+  g_print("Adding Page To Pagecontrol (0x%x) with label '%s'...\n",iPageControl,caption);
+
+  LuaPageControl* PageControl=reinterpret_cast<LuaPageControl*>(iPageControl);
+ 
+  GtkWidget *vbox=PageControl->AddPage(caption,-1);
+  
+  lua_pushlightuserdata(L,&vbox);//put pointer of vbox on stack
+  return 1;//return 1 value (handle)
 }
 
 static const luaL_reg R[] =

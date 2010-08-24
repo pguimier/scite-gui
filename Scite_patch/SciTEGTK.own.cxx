@@ -567,7 +567,7 @@ public:
 	//!-start-[Sidebar]
 		GtkWidget *SidebarContainer;
 		void SidebarInitUI(); // Init the sidebar interface.
-	  int GetSidebarHandle();
+	  void *GetSidebarHandle();
 	//!-end-[Sidebar]
 };
 
@@ -3581,17 +3581,18 @@ int main(int argc, char *argv[]) {
 //!-start-[Sidebar]
 void SciTEGTK::SidebarInitUI() 
 {
-	SidebarContainer = gtk_notebook_new();
-	gtk_notebook_set_scrollable (GTK_NOTEBOOK(SidebarContainer),true);
+  SidebarContainer = gtk_vbox_new(true,0);
+	//SidebarContainer = gtk_notebook_new();
+	//gtk_notebook_set_scrollable (GTK_NOTEBOOK(SidebarContainer),true);
 
-  g_print("Notebook-Handle: 0x%x\n",int(SidebarContainer));
+  g_print("Sidebar-Handle: 0x%x\n",int(SidebarContainer));
 	gtk_widget_show(SidebarContainer);
 }
 
-int SciTEGTK::GetSidebarHandle()
+void *SciTEGTK::GetSidebarHandle()
 {
   g_print("Sidebar-Handle (Scite): 0x%x\n",int(SidebarContainer));
-  return int(SidebarContainer);
+  return SidebarContainer;
 }
 //!-end-[Sidebar]
 
