@@ -34,20 +34,19 @@ CPageControl::CPageControl(GtkWidget *parent)
 
 CPageControl::~CPageControl()
 {
-  if (GTK_IS_WIDGET(PageControl)) //if control is not freed before (window destroyed)
-    gtk_widget_destroy(PageControl);
+  //if (GTK_IS_WIDGET(PageControl)) //if control is not freed before (window destroyed)
+  //  gtk_widget_destroy(PageControl);
 }
 
 GtkWidget *CPageControl::AddPage(const char *caption,int position)
 {
-  g_print("Adding Page (CPageControl)\n");
+  //g_print("Adding Page (CPageControl)\n");
 	GtkWidget *label=gtk_accel_label_new(caption);
   GtkWidget *vbox=gtk_vbox_new(2,false);
 	gtk_widget_show(vbox);
-	g_print("now inserting (%x)\n",int(PageControl));
+	//g_print("now inserting (%x)\n",int(PageControl));
 	
 	gtk_notebook_insert_page(GTK_NOTEBOOK(PageControl),vbox,label,position);
-	g_print("inserted\n");
   return vbox;
 }
 
@@ -59,6 +58,11 @@ void CPageControl::RemovePage(int page_num)
 GtkWidget *CPageControl::GetPage(int page_num)
 {
   return gtk_notebook_get_nth_page(GTK_NOTEBOOK(PageControl),page_num);
+}
+
+GtkWidget *CPageControl::GetWidget()
+{
+  return PageControl;
 }
 
 int CPageControl::GetPageCount()

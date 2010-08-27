@@ -13,6 +13,31 @@ extern "C" {
 #include "LuaControl.h"
 
 /*
+bool function_ref(lua_State* L, int idx, int* pr) //get function pointer
+{
+	if (*pr != 0) {
+		luaL_unref(L,LUA_REGISTRYINDEX,*pr);
+	}
+	lua_pushvalue(L,idx);
+	*pr = luaL_ref(L,LUA_REGISTRYINDEX);
+	return true;
+}
+
+void dispatch_ref(lua_State* L,int idx, int ival) //call function
+{
+	if (idx != 0) {
+		lua_rawgeti(L,LUA_REGISTRYINDEX,idx);
+		lua_pushnumber(L,ival);
+		
+		if (lua_pcall(L,1,0,0)) {
+			OutputMessage(L);
+		}
+	}
+}
+
+*/
+
+/*
 class LuaControl
 {
 protected:

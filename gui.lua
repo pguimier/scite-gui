@@ -11,3 +11,4 @@ tab=gui.Pagecontrol_Add_Page(pagecontrol,"zweite Seite")
 --_ALERT("Tab2:"..tab)
 tab=gui.Pagecontrol_Add_Page(pagecontrol,"3. Seite")
 --_ALERT("Tab3:"..tab)
+-- 
