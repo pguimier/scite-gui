@@ -9,5 +9,5 @@ make
 
 cp ../bin/SciTE $(dirname $0)
 
-echo complete
+echo press enter to close window...
 read _wait_

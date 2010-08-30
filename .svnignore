@@ -2,5 +2,7 @@
 _bak_
 *.bak
 
+*.o
+
 scite_src
 scite-gui*.zip

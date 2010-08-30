@@ -3,5 +3,5 @@
 make clean
 make
 
-echo complete...
+echo press enter to close window...
 read _wait_

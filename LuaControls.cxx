@@ -11,19 +11,25 @@ extern "C" {
 
 #include "LuaControls.h"
 
-gboolean luapagecontrol_destroy(GtkWidget *widget,GdkEvent  *event, gpointer user_data)
+gboolean luapagecontrol_destroy(GtkWidget *widget, gpointer user_data)
 {
-  //free PageControlClass when deleting UI - not run yet :(
-//  g_print("Free LuaPageControl...\n");
-//  LuaPageControl *PageControl=reinterpret_cast<LuaPageControl*>(user_data);
-//  delete(PageControl);
+  //free PageControlClass when deleting GUI-Element
+
+  //void *pt=g_object_get_data (G_OBJECT(widget),"ClassPointer");
+  g_print("Free LuaPageControl...\n");
+  LuaPageControl *PageControl=reinterpret_cast<LuaPageControl*>(user_data);
+  //g_print("user_data: %x, pt: %x\n",int(user_data),int(pt));
+  //LuaPageControl *PageControl=reinterpret_cast<LuaPageControl*>(pt);
+  //g_print("cast ok...now freeing\n");
+  delete(PageControl); //Segmentation fault with this-pointer
+  g_print("free ok...\n");
 }
 
 LuaPageControl::LuaPageControl(lua_State *l,GtkWidget *parent)
   :LuaControl(l), CPageControl(parent)
 {
-  g_object_set_data(G_OBJECT(this->GetWidget()),"ClassPointer",this);
-  g_object_set_data(G_OBJECT(this->GetWidget()),"ClassType",reinterpret_cast<void*>(Type_LuaPageControl));
+  //g_object_set_data(G_OBJECT(this->GetWidget()),"ClassPointer",this);
+  //g_object_set_data(G_OBJECT(this->GetWidget()),"ClassType",reinterpret_cast<void*>(Type_LuaPageControl));
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luapagecontrol_destroy), this);
 }
 
@@ -36,6 +42,7 @@ void free_children(GtkContainer *c)
   {
     GtkWidget *w = GTK_WIDGET(g_list_nth( List, i )->data);
     //first get pointer to class
+    /*
     void *pt=g_object_get_data (G_OBJECT(w),"ClassPointer");
     if (pt) 
     {
@@ -48,9 +55,10 @@ void free_children(GtkContainer *c)
           g_print("free LuaPagecontrol\n");
 			    LuaPageControl *PageControl=reinterpret_cast<LuaPageControl*>(pt);
 			    delete(PageControl);
+			    g_print("LuaPagecontrol freed...\n");
 			  }break;
 			}
-    }
+    }*/
     gtk_widget_destroy(w);
   }
 }
