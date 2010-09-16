@@ -11,7 +11,7 @@ extern "C" {
 
 #include "LuaControls.h"
 
-gboolean luapagecontrol_destroy(GtkWidget *widget, gpointer user_data)
+void luapagecontrol_destroy(GtkWidget *widget, gpointer user_data)
 {
   //free PageControlClass when deleting GUI-Element
 
@@ -30,6 +30,7 @@ LuaPageControl::LuaPageControl(lua_State *l,GtkWidget *parent)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"ClassPointer",this);
   //g_object_set_data(G_OBJECT(this->GetWidget()),"ClassType",reinterpret_cast<void*>(Type_LuaPageControl));
+  SetControlType(lcPageControl);
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luapagecontrol_destroy), this);
 }
 

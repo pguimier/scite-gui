@@ -19,26 +19,14 @@ enum
 	evMax
 };
 
-enum
-{
-	lcPageControl=0,
-	lcSplitter,
-  lcListView,
-	
-	lcMax
-};
-
 class LuaControl
 {
 protected:
 	lua_State* L;
 	int events[evMax];//array for holding lua-function-pointer
-	int ControlType;
 public:
 	LuaControl(lua_State *l);
 	~LuaControl();
 	void removeEvent(int EventID);
 	void setEvent(int EventID,int idx);
-	void SetControlType(int ct);
-	int GetControlType() {return ControlType;}
 };
