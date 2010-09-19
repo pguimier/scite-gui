@@ -18,6 +18,7 @@ void RowActivated (GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn  
 */
 CSplitter::CSplitter(GtkWidget *parent,bool vertical)
 {
+  GtkWidget *Paned;
   if (vertical)
     Paned=gtk_vpaned_new(); 
   else
@@ -26,6 +27,7 @@ CSplitter::CSplitter(GtkWidget *parent,bool vertical)
   //g_object_set(Paned,"min-position",10, NULL); //not writable
   //g_signal_connect(ListView, "row-activated", (GCallback) RowActivated, this);
   gtk_widget_show(Paned);
+  /*
   if (GTK_IS_BOX(parent))
   {
     //g_print("box-parent (%x)\n",int(parent));
@@ -35,20 +37,24 @@ CSplitter::CSplitter(GtkWidget *parent,bool vertical)
     //g_print("container-parent (%x)\n",int(parent));
     gtk_container_add(GTK_CONTAINER(parent),Paned);
   }else g_print("unknown parent (Paned)");
+  */
   //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
   g_object_set_data(G_OBJECT(Paned),"ClassPointer",this);
+  
+  SetWidget(Paned);
+  SetParent(parent);
 }
 
 CSplitter::~CSplitter()
 {
-  if (GTK_IS_WIDGET(Paned)) //if control is not freed before (window destroyed)
-    gtk_widget_destroy(Paned);
+  if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
+    gtk_widget_destroy(GetWidget());
 }
 
 void CSplitter::SetClients(GtkWidget *Child1,GtkWidget *Child2)
 {
-  gtk_paned_add1(GTK_PANED(Paned),Child1);
-  gtk_paned_add2(GTK_PANED(Paned),Child2);
+  gtk_paned_add1(GTK_PANED(GetWidget()),Child1);
+  gtk_paned_add2(GTK_PANED(GetWidget()),Child2);
 }
 
 const char* BoolToChar(bool b)
@@ -66,14 +72,14 @@ void CSplitter::setPanedProperties(GtkWidget *child,bool resize,bool shrink)
   g_value_init(&gvalue_shrink, G_TYPE_BOOLEAN);
   g_value_set_boolean(&gvalue_shrink, shrink);
 
-  gtk_container_child_set_property(GTK_CONTAINER(Paned),child,"resize",&gvalue_resize);
-  gtk_container_child_set_property(GTK_CONTAINER(Paned),child,"shrink",&gvalue_shrink);
+  gtk_container_child_set_property(GTK_CONTAINER(GetWidget()),child,"resize",&gvalue_resize);
+  gtk_container_child_set_property(GTK_CONTAINER(GetWidget()),child,"shrink",&gvalue_shrink);
 }
 
 void CSplitter::SetStaticChild(int c)
 {
-  GtkWidget *c1=gtk_paned_get_child1(GTK_PANED(Paned));
-  GtkWidget *c2=gtk_paned_get_child2(GTK_PANED(Paned));
+  GtkWidget *c1=gtk_paned_get_child1(GTK_PANED(GetWidget()));
+  GtkWidget *c2=gtk_paned_get_child2(GTK_PANED(GetWidget()));
 
   switch (c)
   {
@@ -98,9 +104,9 @@ void CSplitter::SetStaticChild(int c)
 void CSplitter::SetSplitterPosition(int p,bool SecondChild)
 {
   if (!SecondChild)
-    gtk_paned_set_position(GTK_PANED(Paned),p);
+    gtk_paned_set_position(GTK_PANED(GetWidget()),p);
 //  else
-//    gtk_paned_set_position(Paned,Width-Splitterwidth-p);
+//    gtk_paned_set_position(GetWidget(),Width-Splitterwidth-p);
 }
 
 //now the Events

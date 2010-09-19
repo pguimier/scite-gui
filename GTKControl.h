@@ -1,3 +1,6 @@
+#ifndef GTK_CONTROL_H
+#define GTK_CONTROL_H
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -13,10 +16,12 @@ class GtkControl
   private:
     GtkWidget *widget;
   protected:
-    virtual void SetWidget(GtkWidget *w);
   public:
     GtkControl();
-    ~GtkControl();
+    virtual ~GtkControl();
     //virtual GtkWidget *GetWidget()={0};
+    void SetWidget(GtkWidget *w);
     GtkWidget *GetWidget() {return widget;};
+    void SetParent(GtkWidget *Parent);
 };
+#endif

@@ -14,6 +14,7 @@ CPageControl::CPageControl(GtkWidget *parent)
   GtkWidget *PageControl=gtk_notebook_new();
   gtk_notebook_set_scrollable (GTK_NOTEBOOK(PageControl),true);
   gtk_widget_show(PageControl);
+  /*
   if (GTK_IS_BOX(parent))
   {
     g_print("box-parent (%x)\n",int(parent));
@@ -23,6 +24,7 @@ CPageControl::CPageControl(GtkWidget *parent)
     g_print("container-parent (%x)\n",int(parent));
     gtk_container_add(GTK_CONTAINER(parent),PageControl);
   }else g_print("unknown parent");
+  */
   g_signal_connect (PageControl, "switch-page",G_CALLBACK (PageSwitched), this);
   //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
   g_object_set_data(G_OBJECT(PageControl),"ClassPointer",this);
@@ -31,6 +33,7 @@ CPageControl::CPageControl(GtkWidget *parent)
   
   //g_print("Pages: %d\n",gtk_notebook_get_n_pages(GTK_NOTEBOOK(PageControl)));
   SetWidget(PageControl);
+  SetParent(parent);
 }
 
 CPageControl::~CPageControl()

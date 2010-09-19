@@ -1,12 +1,15 @@
 #include <gtk/gtk.h>
 
+#include "GTKControl.h"
+
 //http://library.gnome.org/devel/gtk/unstable/GtkNotebook.html
-class CSplitter
+class CSplitter:public GtkControl
 {
   private:
-    GtkWidget *Paned;
+    //GtkWidget *Paned;
     void setPanedProperties(GtkWidget *child,bool resize,bool shrink);
   protected:
+    virtual void SetWidget(GtkWidget *w);
   public:
     CSplitter(GtkWidget *parent,bool vertical);
     ~CSplitter();

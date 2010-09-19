@@ -6,11 +6,11 @@
 class CPageControl:public GtkControl
 {
   private:
-    //GtkWidget *PageControl;
   protected:
+    //void SetWidget(GtkWidget *w);
   public:
     CPageControl(GtkWidget *parent);
-    ~CPageControl();
+    virtual ~CPageControl();
     GtkWidget *AddPage(const char *caption,int position=-1);
     void RemovePage(int page_num);
     GtkWidget *GetPage(int page_num);

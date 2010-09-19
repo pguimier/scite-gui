@@ -3150,18 +3150,25 @@ void SciTEGTK::CreateUI() {
 	GtkWidget *boxMainHPane = gtk_vbox_new(FALSE, 0);
 	SidebarInitUI();
 
-  int sbWidth = props.GetInt("sidebar.width", 150);
-	if (props.GetInt("sidebar.show") != 1) sbWidth=0;
-
+  int sbWidth = props.GetInt("sidebar.width", 200);
+	if (props.GetInt("sidebar.show") != 1) 
+	{
+	  sbWidth=0;
+	  //gtk_widget_hide(SidebarContainer);
+	}
+  gtk_widget_set_size_request(SidebarContainer,sbWidth,-1);
+  g_print("width: %d, sbWidth: %d",width,sbWidth);
 	if (props.GetInt("sidebar.left") == 1) {
-		gtk_paned_pack1(GTK_PANED(hPane), SidebarContainer,false,false);
+		gtk_paned_pack1(GTK_PANED(hPane), SidebarContainer,true,true);
 		gtk_paned_pack2(GTK_PANED(hPane), boxMainHPane,true,true);
 		gtk_paned_set_position(GTK_PANED(hPane), sbWidth);
+		g_print("[Left] width: %d, sbWidth: %d\n",width,sbWidth);
   } else
 	{
 		gtk_paned_pack1(GTK_PANED(hPane), boxMainHPane,true,true);
-		gtk_paned_pack2(GTK_PANED(hPane), SidebarContainer,false,false);
+		gtk_paned_pack2(GTK_PANED(hPane), SidebarContainer,true,true);
 		gtk_paned_set_position(GTK_PANED(hPane), width-sbWidth);
+		g_print("[Right] width: %d, sbWidth: %d\n",width,sbWidth);
 	}
 	
 	//gtk_widget_set_size_request (SidebarContainer,sbWidth,-1);

@@ -34,10 +34,10 @@ void RowActivated (GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn  
   lv->OnRowActivated(path,col);
 }
 
-CListView::CListView(GtkWidget *parent,int cols)
+CListView::CListView(GtkWidget *parent/*,int cols*/)
 {
   fColCount=0;
-  ListView = gtk_tree_view_new ();
+  GtkWidget *ListView = gtk_tree_view_new ();
   //store = gtk_list_store_new (cols, G_TYPE_STRING, G_TYPE_STRING);
   store = gtk_list_store_new (10, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
   gtk_tree_view_set_model (GTK_TREE_VIEW (ListView), GTK_TREE_MODEL(store));
@@ -62,6 +62,7 @@ CListView::CListView(GtkWidget *parent,int cols)
   g_signal_connect(ListView, "row-activated", (GCallback) RowActivated, this);
   
   gtk_widget_show(ListView);
+  /*
   if (GTK_IS_BOX(parent))
   {
     //g_print("box-parent (%x)\n",int(parent));
@@ -71,14 +72,17 @@ CListView::CListView(GtkWidget *parent,int cols)
     //g_print("container-parent (%x)\n",int(parent));
     gtk_container_add(GTK_CONTAINER(parent),ListView);
   }else g_print("unknown parent (Listview)");
+  */
+  SetWidget(ListView);
+  SetParent(parent);
   //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
   g_object_set_data(G_OBJECT(ListView),"ClassPointer",this);
 }
 
 CListView::~CListView()
 {
-  if (GTK_IS_WIDGET(ListView)) //if control is not freed before (window destroyed)
-    gtk_widget_destroy(ListView);
+  if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
+    gtk_widget_destroy(GetWidget());
 }
 
 bool CListView::SetValue(int row,int col,const char *value)
@@ -108,13 +112,22 @@ int CListView::AddColumn(const char *caption)
   GtkCellRenderer *renderer;
   renderer = gtk_cell_renderer_text_new ();
   fColCount=gtk_tree_view_insert_column_with_attributes (
-    GTK_TREE_VIEW (ListView),
+    GTK_TREE_VIEW (GetWidget()),
     -1,      
     caption,
     renderer,
     "text", fColCount,
     NULL);
-  gtk_tree_view_column_set_resizable  (gtk_tree_view_get_column(GTK_TREE_VIEW (ListView),fColCount-1),true);
+  gtk_tree_view_column_set_resizable  (gtk_tree_view_get_column(GTK_TREE_VIEW (GetWidget()),fColCount-1),true);
+}
+
+int CListView::GetRowFromIter(GtkTreeIter &iter)
+{
+  GtkTreePath *treepath = gtk_tree_model_get_path (GTK_TREE_MODEL(store), &iter);
+  gint *indices = gtk_tree_path_get_indices (treepath);
+  gint row = indices[0];
+  gtk_tree_path_free(treepath);
+  return row;
 }
 
 /*
@@ -158,45 +171,9 @@ ghb_selected_subtitle_row(signal_user_data_t *ud)
         }
         return row;
 }
-*/
-/*
-GtkWidget *CPageControl::AddPage(const char *caption,int position)
-{
-  g_print("Adding Page (CPageControl)\n");
-	GtkWidget *label=gtk_accel_label_new(caption);
-  GtkWidget *vbox=gtk_vbox_new(2,false);
-	gtk_widget_show(vbox);
-	g_print("now inserting (%x)\n",int(PageControl));
-	
-	gtk_notebook_insert_page(GTK_NOTEBOOK(PageControl),vbox,label,position);
-	g_print("inserted\n");
-  return vbox;
-}
-
-void CPageControl::RemovePage(int page_num)
-{
-  gtk_notebook_remove_page(GTK_NOTEBOOK(PageControl),page_num);
-}
-
-GtkWidget *CPageControl::GetPage(int page_num)
-{
-  return gtk_notebook_get_nth_page(GTK_NOTEBOOK(PageControl),page_num);
-}
-
-int CPageControl::GetPageCount()
-{
-  return gtk_notebook_get_n_pages(GTK_NOTEBOOK(PageControl));
-}
 
 */
-//now the Events
-/*
-void CPageControl::OnPageSwitch(int page_num)
-{
-  g_print("Page switched to Page #%d\n",page_num);
-}
 
-*/
 
 void CListView::OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col)
 {
