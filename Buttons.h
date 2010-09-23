@@ -8,7 +8,7 @@ class CButton:public GtkControl
   private:
     //GtkWidget *Button;
   protected:
-    virtual void SetWidget(GtkWidget *w);
+    //virtual void SetWidget(GtkWidget *w);
   public:
     CButton(GtkWidget *parent,const char*caption);
     virtual ~CButton();

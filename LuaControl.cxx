@@ -96,7 +96,9 @@ void LuaControl::setEvent(int EventID,int idx)
 	events[EventID]= luaL_ref(L,LUA_REGISTRYINDEX);
 }
 
+/*
 void LuaControl::SetControlType(int ct)
 {
   ControlType=ct;
 }
+*/

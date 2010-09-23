@@ -2,7 +2,7 @@
 
 #include "Buttons.h"
 
-void button_clicked(GtkButton *button, gpointer   user_data)
+void button_clicked(GtkWidget *button, gpointer   user_data)
 {
   CButton *b=(CButton*)user_data;
   b->OnClick();

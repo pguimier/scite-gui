@@ -56,7 +56,10 @@ void GtkControl::SetWidget(GtkWidget *w)
 
 void GtkControl::SetParent(GtkWidget *parent)
 {
-  if (GTK_IS_BOX(parent))
+  if (parent == NULL)
+  {
+  
+  } else if (GTK_IS_BOX(parent))
   {
     //g_print("box-parent (%x)\n",int(parent));
     gtk_box_pack_start(GTK_BOX(parent),widget, TRUE, TRUE, 0);

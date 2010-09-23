@@ -9,7 +9,7 @@ class CSplitter:public GtkControl
     //GtkWidget *Paned;
     void setPanedProperties(GtkWidget *child,bool resize,bool shrink);
   protected:
-    virtual void SetWidget(GtkWidget *w);
+    //virtual void SetWidget(GtkWidget *w);
   public:
     CSplitter(GtkWidget *parent,bool vertical);
     ~CSplitter();

@@ -17,5 +17,5 @@ class CPageControl:public GtkControl
     //GtkWidget *GetWidget();
     int GetPageCount();
 
-    void OnPageSwitch(int page_num);
+    virtual void OnPageSwitch(int page_num);
 };
