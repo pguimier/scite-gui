@@ -26,20 +26,9 @@ CSplitter::CSplitter(GtkWidget *parent,bool vertical)
   
   //g_object_set(Paned,"min-position",10, NULL); //not writable
   //g_signal_connect(ListView, "row-activated", (GCallback) RowActivated, this);
-  gtk_widget_show(Paned);
-  /*
-  if (GTK_IS_BOX(parent))
-  {
-    //g_print("box-parent (%x)\n",int(parent));
-    gtk_box_pack_start(GTK_BOX(parent),Paned, TRUE, TRUE, 0);
-  }else if (GTK_IS_CONTAINER(parent))
-  {
-    //g_print("container-parent (%x)\n",int(parent));
-    gtk_container_add(GTK_CONTAINER(parent),Paned);
-  }else g_print("unknown parent (Paned)");
-  */
+  //gtk_widget_show(Paned);
   //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
-  g_object_set_data(G_OBJECT(Paned),"ClassPointer",this);
+  //g_object_set_data(G_OBJECT(Paned),"ClassPointer",this);
   
   SetWidget(Paned);
   SetParent(parent);
@@ -47,8 +36,8 @@ CSplitter::CSplitter(GtkWidget *parent,bool vertical)
 
 CSplitter::~CSplitter()
 {
-  if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
-    gtk_widget_destroy(GetWidget());
+  // if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
+    // gtk_widget_destroy(GetWidget());
 }
 
 void CSplitter::SetClients(GtkWidget *Child1,GtkWidget *Child2)

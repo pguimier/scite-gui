@@ -11,6 +11,8 @@ extern "C" {
 
 #include "LuaControls.h"
 
+extern const char WINDOW_CLASS[] = "WINDOW*";
+
 void free_children(GtkContainer *c)
 {
   GList *List = gtk_container_get_children (c);

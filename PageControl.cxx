@@ -13,21 +13,10 @@ CPageControl::CPageControl(GtkWidget *parent)
 {
   GtkWidget *PageControl=gtk_notebook_new();
   gtk_notebook_set_scrollable (GTK_NOTEBOOK(PageControl),true);
-  gtk_widget_show(PageControl);
-  /*
-  if (GTK_IS_BOX(parent))
-  {
-    g_print("box-parent (%x)\n",int(parent));
-    gtk_box_pack_start(GTK_BOX(parent),PageControl, TRUE, TRUE, 0);
-  }else if (GTK_IS_CONTAINER(parent))
-  {
-    g_print("container-parent (%x)\n",int(parent));
-    gtk_container_add(GTK_CONTAINER(parent),PageControl);
-  }else g_print("unknown parent");
-  */
+  //gtk_widget_show(PageControl);
   g_signal_connect (PageControl, "switch-page",G_CALLBACK (PageSwitched), this);
   //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
-  g_object_set_data(G_OBJECT(PageControl),"ClassPointer",this);
+  //g_object_set_data(G_OBJECT(PageControl),"ClassPointer",this);
   
   //GtkWidget *page=AddPage("Test",-1);
   
@@ -38,8 +27,8 @@ CPageControl::CPageControl(GtkWidget *parent)
 
 CPageControl::~CPageControl()
 {
-  if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
-    gtk_widget_destroy(GetWidget());
+  // if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
+    // gtk_widget_destroy(GetWidget());
 }
 
 GtkWidget *CPageControl::AddPage(const char *caption,int position)

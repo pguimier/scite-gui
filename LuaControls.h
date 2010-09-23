@@ -19,6 +19,7 @@ enum WindowClasses
 
 //code taken from gui_ext.cpp by Steve Donovan
 //extern const char* WINDOW_CLASS = "WINDOW*";
+extern const char WINDOW_CLASS[];
 
 struct WinWrap {
   int wc;

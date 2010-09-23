@@ -2,6 +2,19 @@
 
 #include "GTKControl.h"
 
+GtkWidget* GetItemFromContainer(GtkContainer *c,int p)
+{
+  GtkWidget *res=0;
+  GList *List = gtk_container_get_children (c);
+
+  int l=g_list_length(List);
+  if (p>=0 && p<l)
+  {
+    res = GTK_WIDGET(g_list_nth( List, p )->data);
+  } else g_print("invalid index");
+  return res;
+}
+
 void my_getsize(GtkWidget *widget, GtkAllocation *allocation, void *data) {
     printf("width = %d, height = %d\n", allocation->width, allocation->height);
 }
@@ -45,27 +58,30 @@ GtkControl::GtkControl()
 
 GtkControl::~GtkControl()
 {
-
+  if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
+    gtk_widget_destroy(GetWidget());
 }
 
 void GtkControl::SetWidget(GtkWidget *w)
 {
   widget=w;
+  g_object_set_data(G_OBJECT(widget),"ClassPointer",this);
   g_signal_connect(widget, "size-allocate", G_CALLBACK(my_getsize), this);
+  gtk_widget_show(widget); //maybe this should not be done for menu-widget
 }
 
 void GtkControl::SetParent(GtkWidget *parent)
 {
-  if (parent == NULL)
+  if (parent)
   {
-  
-  } else if (GTK_IS_BOX(parent))
-  {
-    //g_print("box-parent (%x)\n",int(parent));
-    gtk_box_pack_start(GTK_BOX(parent),widget, TRUE, TRUE, 0);
-  }else if (GTK_IS_CONTAINER(parent))
-  {
-    //g_print("container-parent (%x)\n",int(parent));
-    gtk_container_add(GTK_CONTAINER(parent),widget);
-  }else g_print("unknown parent");
+    if (GTK_IS_BOX(parent))
+    {
+      //g_print("box-parent (%x)\n",int(parent));
+      gtk_box_pack_start(GTK_BOX(parent),widget, TRUE, TRUE, 0);
+    }else if (GTK_IS_CONTAINER(parent))
+    {
+      //g_print("container-parent (%x)\n",int(parent));
+      gtk_container_add(GTK_CONTAINER(parent),widget);
+    }else g_print("unknown parent");
+  }
 }

@@ -10,6 +10,7 @@ extern "C" {
 #include <gtk/gtk.h>
 #include <stdint.h>
 #include <string.h>
+GtkWidget* GetItemFromContainer(GtkContainer *c,int p);
 
 class GtkControl
 {

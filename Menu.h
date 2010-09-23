@@ -10,7 +10,7 @@ class CPopupMenu:public GtkControl
   protected:
     //virtual void SetWidget(GtkWidget *w);
   public:
-    CPopupMenu(GtkWidget *parent,const char*caption);
+    CPopupMenu(GtkWidget *parent);
     virtual ~CPopupMenu();
     //void SetCaption(const char*caption);
     void AddMenuItem(const char*caption,int ID);

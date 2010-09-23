@@ -9,10 +9,43 @@ class CButton:public GtkControl
     //GtkWidget *Button;
   protected:
     //virtual void SetWidget(GtkWidget *w);
+    virtual GtkWidget *CreateButtonWidget(const char*caption);
   public:
     CButton(GtkWidget *parent,const char*caption);
     virtual ~CButton();
     void SetCaption(const char*caption);
 
     void OnClick();
+};
+
+class CCheckBox:public CButton//GtkControl
+{
+  private:
+    //GtkWidget *Button;
+  protected:
+    //virtual void SetWidget(GtkWidget *w);
+    virtual GtkWidget *CreateButtonWidget(const char*caption);
+  public:
+    CCheckBox(GtkWidget *parent,const char*caption);
+    virtual ~CCheckBox();
+    //void SetCaption(const char*caption); //derived from CButton
+    bool GetChecked();
+    void SetChecked(bool checked);
+    //void OnClick();
+};
+
+class CRadioGroup:public GtkControl
+{
+  private:
+    GtkWidget *GroupMaster;
+  protected:
+    //virtual void SetWidget(GtkWidget *w);
+  public:
+    CRadioGroup(GtkWidget *parent,const char*caption_of_first);
+    virtual ~CRadioGroup();
+    //void SetCaption(const char*caption); //derived from CButton
+    void AddRadio(const char* caption);
+    int GetChecked();
+    void SetChecked(int checked);
+    //void OnClick();
 };

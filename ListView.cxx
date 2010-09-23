@@ -61,28 +61,17 @@ CListView::CListView(GtkWidget *parent/*,int cols*/)
   */
   g_signal_connect(ListView, "row-activated", (GCallback) RowActivated, this);
   
-  gtk_widget_show(ListView);
-  /*
-  if (GTK_IS_BOX(parent))
-  {
-    //g_print("box-parent (%x)\n",int(parent));
-    gtk_box_pack_start(GTK_BOX(parent),ListView, TRUE, TRUE, 0);
-  }else if (GTK_IS_CONTAINER(parent))
-  {
-    //g_print("container-parent (%x)\n",int(parent));
-    gtk_container_add(GTK_CONTAINER(parent),ListView);
-  }else g_print("unknown parent (Listview)");
-  */
+  //gtk_widget_show(ListView);
+  //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
+  //g_object_set_data(G_OBJECT(ListView),"ClassPointer",this);
   SetWidget(ListView);
   SetParent(parent);
-  //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
-  g_object_set_data(G_OBJECT(ListView),"ClassPointer",this);
 }
 
 CListView::~CListView()
 {
-  if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
-    gtk_widget_destroy(GetWidget());
+  // if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
+    // gtk_widget_destroy(GetWidget());
 }
 
 bool CListView::SetValue(int row,int col,const char *value)

@@ -64,8 +64,9 @@ static int do_CreatePageControl(lua_State *L) //pagecontrol=gui.New_Pagecontrol(
 
   LuaPageControl *PageControl=new LuaPageControl(L,GTK_WIDGET(iParent));
   
-  lua_pushlightuserdata(L,PageControl);//put pointer of Pagecontrol to stack
-  return 1;//return 1 value (handle)
+/*  lua_pushlightuserdata(L,PageControl);//put pointer of Pagecontrol to stack
+  return 1;//return 1 value (handle)*/
+  return wrap_window(L,PageControl, lcPageControl);
 }
 
 static int do_CreateListView(lua_State *L) //lv=gui.New_Listview(parent) --parent can be 0
@@ -89,9 +90,9 @@ static int do_CreateSplitter(lua_State *L) //spl=gui.New_Splitter(parent,bool ve
   g_print("Adding Pagecontrol to Parent 0x%x...\n",int(iParent));
 
   LuaSplitter *Splitter=new LuaSplitter(L,GTK_WIDGET(iParent),vertical);
-
-  lua_pushlightuserdata(L,Splitter); //put pointer of Splitter to stack
-  return 1;//return 1 value (handle)
+/*  lua_pushlightuserdata(L,Splitter); //put pointer of Splitter to stack
+  return 1;//return 1 value (handle)  */
+  return wrap_window(L,Splitter, lcSplitter);
 }
 
 static int do_CreateButton(lua_State *L) //btn=gui.New_Button(parent,"caption") --parent can be 0
@@ -116,12 +117,16 @@ static int do_PageControlAddPage(lua_State *L) //tab=gui.Pagecontrol_Add_Page(pa
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
 
-  LuaPageControl *PageControl=reinterpret_cast<LuaPageControl*>(iLuaControl);
- 
-  void *vbox=PageControl->AddPage(caption,-1);
-  
-  lua_pushlightuserdata(L,vbox);//put pointer of vbox on stack
-  return 1;//return 1 value (handle)
+  WinWrap *wrp=(WinWrap*)iLuaControl;
+  //LuaPageControl *PageControl=reinterpret_cast<LuaPageControl*>(iLuaControl);
+   if (wrp->wc==lcPageControl)
+  {
+    LuaPageControl *PageControl=reinterpret_cast<LuaPageControl*>(wrp->window);
+    void *vbox=PageControl->AddPage(caption,-1);
+    lua_pushlightuserdata(L,vbox);//put pointer of vbox on stack
+    return 1;//return 1 value (handle)
+  } else g_print("Not a PageControl (AddPage)!\n");
+  return 0;
 }
 
 static int do_ListViewAddColumn(lua_State *L) //gui.Listview_Add_Column(Listview,"caption")
@@ -138,8 +143,7 @@ static int do_ListViewAddColumn(lua_State *L) //gui.Listview_Add_Column(Listview
     g_print("Listview:CastToLuaListview\n");
     LuaListView *Listview=reinterpret_cast<LuaListView*>(wrp->window);
     Listview->AddColumn(caption);
-  }
-  //lua_pushlightuserdata(L,vbox);//put pointer of vbox on stack
+  } else g_print("Not a Listview (AddColumn)!\n");
   return 0;//return 1 value (handle)
 }
 
@@ -157,7 +161,7 @@ static int do_ListViewAddItem(lua_State *L) //row=gui.Listview_Add_Item(Listview
     int row=Listview->GetRowFromIter(iter);
     lua_pushinteger(L,row);//put pointer of vbox on stack
     return 1;//return 1 value (handle)
-  }
+  } else g_print("Not a Listview (AddItem)!\n");
   return 0;
 }
 
@@ -175,35 +179,28 @@ static int do_ListViewSetItem(lua_State *L) //gui.Listview_Set_Item(listview,row
   {
     LuaListView *Listview=reinterpret_cast<LuaListView*>(wrp->window);
     Listview->SetValue(row,col,caption);
-  }
+  } else g_print("Not a Listview (SetItem)!\n");
   return 0;
 }
 
 static int do_SplitterSetClients(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Child1,Child2)
 {
+  //int ArgumentCount = lua_gettop(L);
   void *iLuaControl=lua_touserdata(L,1);
   void *iChild1=lua_touserdata(L,2);
   void *iChild2=lua_touserdata(L,3);
 
   g_print("adding Child1: %x and Child2: %x to Splitter %x\n",int(iChild1),int(iChild2),int(iLuaControl));
 
-  LuaSplitter *Splitter=reinterpret_cast<LuaSplitter*>(iLuaControl);
-  //int ArgumentCount = lua_gettop(L);
-  /*
-  GtkControl *Child1=reinterpret_cast<GtkControl*>(iChild1);
-  LuaListView *C1=reinterpret_cast<LuaListView*>(iChild1);
-  GtkControl *Child2=reinterpret_cast<GtkControl*>(iChild2);
-  LuaButton *C2=reinterpret_cast<LuaButton*>(iChild2);
-  
-//  g_print("Widgets: C1:%x,C2:%x\n",int(Child1->GetWidget()),int(Child2->GetWidget()));
-//  Splitter->SetClients(Child1->GetWidget(),Child2->GetWidget());
-  g_print("Widgets: C1:%x,C2:%x\n",int(C1->GetWidget()),int(C2->GetWidget()));
-  Splitter->SetClients(C1->GetWidget(),C2->GetWidget());
-  */
-  GtkWidget *C1=GetWidgetFromWrapPointer(iChild1);
-  GtkWidget *C2=GetWidgetFromWrapPointer(iChild2);
-  Splitter->SetClients(C1,C2);
-  
+  WinWrap *wrp=(WinWrap*)iLuaControl;
+  //LuaSplitter *Splitter=reinterpret_cast<LuaSplitter*>(iLuaControl);
+  if (wrp->wc==lcSplitter)
+  {
+    LuaSplitter *Splitter=reinterpret_cast<LuaSplitter*>(wrp->window);
+    GtkWidget *C1=GetWidgetFromWrapPointer(iChild1);
+    GtkWidget *C2=GetWidgetFromWrapPointer(iChild2);
+    Splitter->SetClients(C1,C2);
+  } else g_print("Not a Splitter (SetClients)!\n");
   return 0;
 }
 
