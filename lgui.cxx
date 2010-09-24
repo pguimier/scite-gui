@@ -110,6 +110,21 @@ static int do_CreateButton(lua_State *L) //btn=gui.New_Button(parent,"caption") 
   return wrap_window(L,Button, lcButton);
 }
 
+static int do_CreatePopup(lua_State *L) //popup=gui.New_Popup(parent)
+{
+  void *iParent=lua_touserdata(L,1);
+  GtkWidget *P=GetWidgetFromWrapPointer(iParent);
+  
+  g_print("Adding Popup to Parent 0x%x...\n",int(P));
+
+  LuaPopupMenu *Popup=new LuaPopupMenu(L,GTK_WIDGET(P));
+  
+  g_print("Popup-Widget: %x\n",int(Popup->GetWidget()));
+  /*lua_pushlightuserdata(L,Button); //put pointer of Splitter to stack
+  return 1;//return 1 value (handle)*/
+  return wrap_window(L,Popup, lcPopupMenu);
+}
+
 //window Methods
 
 static int do_PageControlAddPage(lua_State *L) //tab=gui.Pagecontrol_Add_Page(pagecontrol,"caption")
@@ -204,6 +219,25 @@ static int do_SplitterSetClients(lua_State *L) //gui.Splitter_Set_Clients(Splitt
   return 0;
 }
 
+static int do_PopupAddItem(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Child1,Child2)
+{
+  //int ArgumentCount = lua_gettop(L);
+  void *iLuaControl=lua_touserdata(L,1);
+  const char *caption=luaL_checkstring(L,2);
+  int id=luaL_checkinteger(L,3);
+  
+  g_print("adding MenuItem %s to Popupmenu %x\n",caption,int(iLuaControl));
+
+  WinWrap *wrp=(WinWrap*)iLuaControl;
+  //LuaSplitter *Splitter=reinterpret_cast<LuaSplitter*>(iLuaControl);
+  if (wrp->wc==lcPopupMenu)
+  {
+    LuaPopupMenu *Popup=reinterpret_cast<LuaPopupMenu*>(wrp->window);
+    Popup->AddMenuItem(caption,id);
+  } else g_print("Not a PopupMenu (AddItem)!\n");
+  return 0;
+}
+
 /*
 //function taken from gui_ext.cpp by Steve Donovan
 static wchar_t** table_to_str_array(lua_State *L, int idx, int* psz = NULL)
@@ -235,10 +269,12 @@ static const luaL_reg R[] =
 	{ "Listview_Add_Item", do_ListViewAddItem },
 	{ "Listview_Set_Item", do_ListViewSetItem },
 	{ "Splitter_Set_Clients", do_SplitterSetClients },
+  { "Popup_Add_Item", do_PopupAddItem },
 	{ "New_Pagecontrol",	do_CreatePageControl },
 	{ "New_Listview",	do_CreateListView },
 	{ "New_Splitter",	do_CreateSplitter },
   { "New_Button", do_CreateButton },
+  { "New_Popup", do_CreatePopup },
 	{ NULL,			NULL	}
 };
 /*

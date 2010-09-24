@@ -25,6 +25,24 @@ static void menuitem_activate(GtkWidget *w)
 }
 
 */
+/*
+static void trayIconPopup(GtkStatusIcon *status_icon, guint button, guint32 activate_time, gpointer popUpMenu)
+{
+    gtk_menu_popup(GTK_MENU(popUpMenu), NULL, NULL, gtk_status_icon_position_menu, status_icon, button, activate_time);
+}
+*/
+
+gboolean view_menu(GtkWidget *wid,GdkEventButton *event,GtkWidget *menu)
+{
+    if((event->button == 3) && (event->type == GDK_BUTTON_PRESS))
+    {
+        gtk_menu_popup(GTK_MENU(menu),NULL,NULL,NULL,NULL,event->button,event->time);
+        /* from true to TRUE */
+        return TRUE;
+    }
+    /* from false to FALSE */
+    return FALSE;
+} 
 
 CPopupMenu::CPopupMenu(GtkWidget *parent)
 {
@@ -38,6 +56,8 @@ CPopupMenu::CPopupMenu(GtkWidget *parent)
   //SetParent(parent);
   //http://library.gnome.org/devel/gtk/stable/gtk-migrating-checklist.html#checklist-popup-menu
   gtk_menu_attach_to_widget (GTK_MENU (Menu), parent, NULL);
+  //g_signal_connect(GTK_STATUS_ICON (trayIcon), "popup-menu", GTK_SIGNAL_FUNC (trayIconPopup), menu);
+  g_signal_connect(G_OBJECT(parent),"button-press-event",G_CALLBACK(view_menu),(gpointer)Menu);
 }
 
 CPopupMenu::~CPopupMenu()
@@ -50,7 +70,7 @@ void CPopupMenu::AddMenuItem(const char*caption,int ID)
 {
   //gtk_widget_set_sensitive(menuitem_edit, FALSE); //disable
   GtkWidget *menuitem;
-  if (strcmp(caption,""))
+  if (!strcmp(caption,""))
   {
     menuitem=gtk_separator_menu_item_new();
   } else

@@ -18,6 +18,12 @@ gui.Listview_Set_Item(lv,row,1,"i1c2")
 row=gui.Listview_Add_Item(lv,"Item2")
 gui.Listview_Set_Item(lv,row,1,"i2c2")
 
+pu=gui.New_Popup(lv)
+gui.Popup_Add_Item(pu,"test1",1)
+gui.Popup_Add_Item(pu,"test2",2)
+gui.Popup_Add_Item(pu,"",-1)
+gui.Popup_Add_Item(pu,"test3",3)
+
 --local btn=gui.New_Button(tab,"Test")
 local btn=gui.New_Button(0,"Test")
 

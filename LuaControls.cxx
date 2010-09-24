@@ -126,3 +126,10 @@ LuaButton::LuaButton(lua_State *l,GtkWidget *parent,const char *caption)
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
 }
 
+LuaPopupMenu::LuaPopupMenu(lua_State *l,GtkWidget *parent)
+  :LuaControl(l), CPopupMenu(parent)
+{
+  g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcPopupMenu)); //for Destroy
+  g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
+}
+

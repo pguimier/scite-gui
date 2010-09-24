@@ -6,6 +6,7 @@
 #include "ListView.h"
 #include "Splitter.h"
 #include "Buttons.h"
+#include "Menu.h"
 
 enum WindowClasses
 {
@@ -13,7 +14,8 @@ enum WindowClasses
   lcListView,
 	lcSplitter,
 	lcButton,
-	
+	lcPopupMenu,
+  
 	lcMax
 };
 
@@ -84,5 +86,18 @@ class LuaButton:public LuaControl,public CButton
     LuaButton(lua_State *l,GtkWidget *parent,const char *caption);
     virtual ~LuaButton() {};
 };
+
+class LuaPopupMenu:public LuaControl,public CPopupMenu
+{
+  private:
+  
+  protected:
+  
+  public:
+    LuaPopupMenu(lua_State *l,GtkWidget *parent);
+    virtual ~LuaPopupMenu() {};
+};
+
+
 #endif
 
