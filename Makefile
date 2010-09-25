@@ -1,7 +1,7 @@
 CC           = g++           # use GNU C++ compiler
 CC-FLAGS     = -Wall -c      # warn all
-LINKER       = g++           # use GNU C++ as linker 
-LINKER-FLAGS = -shared -o   # flags for linker (-o must be last)
+LD       = g++           # use GNU C++ as linker 
+LD-FLAGS = -shared -o   # flags for linker (-o must be last)
 RM           = rm -f         # how to remove files
 MAKE         = make          # name of make utility 
 OBJS         = lgui.o LuaControls.o LuaControl.o GTKControl.o PageControl.o ListView.o Buttons.o Splitter.o Menu.o Dialogs.o TextControls.o Container.o
@@ -14,7 +14,7 @@ GTK_INC      = `pkg-config --cflags --libs gtk+-2.0`
 INC          = $(LUA_INCS) $(GTK_INC)
 
 $(TARGET): $(OBJS)
-	$(LINKER) $(INC) $(LINKER-FLAGS) $@ $(OBJS)
+	$(LD) $(INC) $(LD-FLAGS) $@ $(OBJS)
 
 #create from all *.cxx the .o with same basename
 #.cxx.o:
