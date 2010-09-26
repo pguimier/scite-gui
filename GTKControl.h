@@ -24,5 +24,6 @@ class GtkControl
     void SetWidget(GtkWidget *w);
     GtkWidget *GetWidget() {return widget;};
     void SetParent(GtkWidget *Parent);
+    void OnResize(int width,int height);
 };
 #endif

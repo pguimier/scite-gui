@@ -28,7 +28,12 @@ gui.Popup_Add_Item(pu,"test3",3)
 local btn=gui.New_Button(0,"Test")
 
 local spl=gui.New_Splitter(tab,true)
-gui.Splitter_Set_Clients(spl,lv,btn)
+
+local spl2=gui.New_Splitter(0,true)
+gui.Splitter_Set_Clients(spl,lv,spl2)
+local pagecontrol2=gui.New_Pagecontrol(0)
+gui.Splitter_Set_Clients(spl2,btn,pagecontrol2);
+local tab=gui.Pagecontrol_Add_Page(pagecontrol2,"gui-test2")
 
 --_ALERT(row)
 tab=gui.Pagecontrol_Add_Page(pagecontrol,"2nd Page")
