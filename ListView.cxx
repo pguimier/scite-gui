@@ -66,6 +66,7 @@ CListView::CListView(GtkWidget *parent/*,int cols*/)
   //g_object_set_data(G_OBJECT(ListView),"ClassPointer",this);
   SetWidget(ListView);
   SetParent(parent);
+  gtk_widget_set_size_request (ListView,-1,-1);
 }
 
 CListView::~CListView()

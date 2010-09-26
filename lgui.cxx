@@ -231,6 +231,7 @@ static int do_SplitterSetClients(lua_State *L) //gui.Splitter_Set_Clients(Splitt
     GtkWidget *C1=GetWidgetFromWrapPointer(iChild1);
     GtkWidget *C2=GetWidgetFromWrapPointer(iChild2);
     Splitter->SetClients(C1,C2);
+    Splitter->SetStaticChild(0);
   } else g_print("Not a Splitter (SetClients)!\n");
   return 0;
 }

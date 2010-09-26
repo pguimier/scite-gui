@@ -8,6 +8,12 @@ void button_clicked(GtkWidget *button, gpointer   user_data)
   b->OnClick();
 }
 
+void radio_toggled(GtkWidget *radio, gpointer   user_data)
+{
+  CRadioGroup *rg=(CRadioGroup*)user_data;
+  rg->OnChange();
+}
+
 GtkWidget *CButton::CreateButtonWidget(const char*caption)
 {
   return gtk_button_new_with_label (caption);
@@ -79,6 +85,7 @@ void CCheckBox::SetChecked(bool checked)
 //Radiogroup
 CRadioGroup::CRadioGroup(GtkWidget *parent,const char*caption_of_first)
 {
+  radiocount=0;
   GtkWidget *Radiogroup=gtk_vbox_new(true,2);
   gtk_widget_show(Radiogroup);
   GroupMaster=gtk_radio_button_new_with_label_from_widget(NULL, caption_of_first);
@@ -86,11 +93,13 @@ CRadioGroup::CRadioGroup(GtkWidget *parent,const char*caption_of_first)
   gtk_widget_show(GroupMaster);
   //gtk_widget_show(Radiogroup);
   //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
-  //g_object_set_data(G_OBJECT(Radiogroup),"ClassPointer",this);
-  //g_signal_connect(Checkbox, "clicked", (GCallback) button_clicked, this);
+  g_object_set_data(G_OBJECT(Radiogroup),"ClassPointer",this);
+  g_object_set_data(G_OBJECT(GroupMaster),"ID",gpointer(radiocount++));
+  g_signal_connect(GroupMaster, "toggled", (GCallback) radio_toggled, this);
   g_print("CRadioGroup set Widget [%x]/Parent [%x]\n",int(Radiogroup),int(parent));
   SetWidget(Radiogroup);
   SetParent(parent);
+  //gtk_widget_set_size_request (Radiogroup,0,0);
 }
 
 CRadioGroup::~CRadioGroup()
@@ -124,5 +133,12 @@ void CRadioGroup::AddRadio(const char* caption)
 {
   GtkWidget *radio=gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(GroupMaster), caption);
   gtk_container_add(GTK_CONTAINER(GetWidget()), radio); 
+  g_object_set_data(G_OBJECT(GroupMaster),"ID",gpointer(radiocount++));
+  g_signal_connect(GroupMaster, "toggled", (GCallback) radio_toggled, this);
   gtk_widget_show(radio);
+}
+
+void CRadioGroup::OnChange()
+{
+  g_print("Radiogroup changed [%d]\n",GetChecked());
 }
