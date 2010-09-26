@@ -125,6 +125,22 @@ static int do_CreatePopup(lua_State *L) //popup=gui.New_Popup(parent)
   return wrap_window(L,Popup, lcPopupMenu);
 }
 
+static int do_CreateRadioGroup(lua_State *L) //btn=gui.New_RadioGroup(parent,"caption") --parent can be 0
+{
+  void *iParent=lua_touserdata(L,1);
+  const char *caption=luaL_checkstring(L,2);
+  
+  g_print("Adding RadioGroup to Parent 0x%x...\n",int(iParent));
+
+  LuaRadioGroup *Radiogroup=new LuaRadioGroup(L,GTK_WIDGET(iParent),caption);
+  
+  g_print("RadioGroup-Widget: %x\n",int(Radiogroup->GetWidget()));
+  /*lua_pushlightuserdata(L,Button); //put pointer of Splitter to stack
+  return 1;//return 1 value (handle)*/
+  return wrap_window(L,Radiogroup, lcRadioGroup);
+}
+
+
 //window Methods
 
 static int do_PageControlAddPage(lua_State *L) //tab=gui.Pagecontrol_Add_Page(pagecontrol,"caption")
@@ -238,6 +254,22 @@ static int do_PopupAddItem(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Chi
   return 0;
 }
 
+static int do_RadioGroupAddItem(lua_State *L) //row=gui.Listview_Add_Item(Listview,"caption")
+{
+  void *iLuaControl=lua_touserdata(L,1);
+  const char *caption=luaL_checkstring(L,2);
+
+  WinWrap *wrp=(WinWrap*)iLuaControl;
+  //LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
+  if (wrp->wc==lcRadioGroup)
+  {
+    LuaRadioGroup *Radiogroup=reinterpret_cast<LuaRadioGroup*>(wrp->window);
+    Radiogroup->AddRadio(caption);
+  } else g_print("Not a RadioGroup (AddItem)!\n");
+  return 0;
+}
+
+
 /*
 //function taken from gui_ext.cpp by Steve Donovan
 static wchar_t** table_to_str_array(lua_State *L, int idx, int* psz = NULL)
@@ -270,11 +302,13 @@ static const luaL_reg R[] =
 	{ "Listview_Set_Item", do_ListViewSetItem },
 	{ "Splitter_Set_Clients", do_SplitterSetClients },
   { "Popup_Add_Item", do_PopupAddItem },
+	{ "Radiogroup_Add_Item", do_RadioGroupAddItem },
 	{ "New_Pagecontrol",	do_CreatePageControl },
 	{ "New_Listview",	do_CreateListView },
 	{ "New_Splitter",	do_CreateSplitter },
   { "New_Button", do_CreateButton },
   { "New_Popup", do_CreatePopup },
+  { "New_Radiogroup", do_CreateRadioGroup },
 	{ NULL,			NULL	}
 };
 /*

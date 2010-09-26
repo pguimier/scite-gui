@@ -133,3 +133,10 @@ LuaPopupMenu::LuaPopupMenu(lua_State *l,GtkWidget *parent)
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
 }
 
+LuaRadioGroup::LuaRadioGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first)
+  :LuaControl(l), CRadioGroup(parent,caption_of_first)
+{
+  g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
+  g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
+}
+

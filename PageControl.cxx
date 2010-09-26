@@ -40,6 +40,7 @@ GtkWidget *CPageControl::AddPage(const char *caption,int position)
 	//g_print("now inserting (%x)\n",int(PageControl));
 	
 	gtk_notebook_insert_page(GTK_NOTEBOOK(GetWidget()),vbox,label,position);
+	g_print("Page-Widget: %x\n",int(vbox));
   return vbox;
 }
 

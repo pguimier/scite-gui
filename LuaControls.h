@@ -15,6 +15,7 @@ enum WindowClasses
 	lcSplitter,
 	lcButton,
 	lcPopupMenu,
+  lcRadioGroup,
   
 	lcMax
 };
@@ -96,6 +97,17 @@ class LuaPopupMenu:public LuaControl,public CPopupMenu
   public:
     LuaPopupMenu(lua_State *l,GtkWidget *parent);
     virtual ~LuaPopupMenu() {};
+};
+
+class LuaRadioGroup:public LuaControl,public CRadioGroup
+{
+  private:
+  
+  protected:
+  
+  public:
+    LuaRadioGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first);
+    virtual ~LuaRadioGroup() {};
 };
 
 

@@ -34,7 +34,8 @@ gui.Splitter_Set_Clients(spl,lv,spl2)
 local pagecontrol2=gui.New_Pagecontrol(0)
 gui.Splitter_Set_Clients(spl2,btn,pagecontrol2);
 local tab=gui.Pagecontrol_Add_Page(pagecontrol2,"gui-test2")
-
+local radio=gui.New_Radiogroup(tab,"1st choice")
+gui.Radiogroup_Add_Item(radio,"2nd choice")
 --_ALERT(row)
 tab=gui.Pagecontrol_Add_Page(pagecontrol,"2nd Page")
 --local btn=gui.New_Button(tab,"Test")
