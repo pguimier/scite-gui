@@ -39,6 +39,7 @@ class CRadioGroup:public GtkControl
   private:
     GtkWidget *GroupMaster;
     int radiocount;
+    int selectedindex;
   protected:
     //virtual void SetWidget(GtkWidget *w);
   public:
@@ -48,5 +49,6 @@ class CRadioGroup:public GtkControl
     void AddRadio(const char* caption);
     int GetChecked();
     void SetChecked(int checked);
+    void CheckSelected();
     void OnChange();
 };

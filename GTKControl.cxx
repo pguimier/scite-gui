@@ -18,7 +18,8 @@ GtkWidget* GetItemFromContainer(GtkContainer *c,int p)
 void my_getsize(GtkWidget *widget, GtkAllocation *allocation, void *user_data) 
 {
     GtkControl *gc=(GtkControl*)user_data;
-    gc->OnResize(allocation->width, allocation->height);
+    //gc->OnResize(allocation->width, allocation->height);
+    gc->CheckSize(allocation->width, allocation->height); //check first if size has really changed
     //printf("width = %d, height = %d\n", allocation->width, allocation->height);
 }
 
@@ -88,6 +89,20 @@ void GtkControl::SetParent(GtkWidget *parent)
     }else g_print("unknown parent");
   }
 }
+
+void GtkControl::CheckSize(int width,int height)
+{
+  //int wc=int(g_object_get_data (G_OBJECT(widget),"WindowClass"));
+
+  //g_print("[%d] Width: %d, Height: %d\n",wc,width,height);
+  if ((width!=fWidth)||(height!=fHeight))
+  {
+    fWidth=width;
+    fHeight=height;
+    OnResize(width,height);
+  }
+}
+
 
 void GtkControl::OnResize(int width,int height)
 {

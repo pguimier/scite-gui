@@ -11,7 +11,8 @@ void button_clicked(GtkWidget *button, gpointer   user_data)
 void radio_toggled(GtkWidget *radio, gpointer   user_data)
 {
   CRadioGroup *rg=(CRadioGroup*)user_data;
-  rg->OnChange();
+  //rg->OnChange();
+  rg->CheckSelected();
 }
 
 GtkWidget *CButton::CreateButtonWidget(const char*caption)
@@ -136,6 +137,15 @@ void CRadioGroup::AddRadio(const char* caption)
   g_object_set_data(G_OBJECT(GroupMaster),"ID",gpointer(radiocount++));
   g_signal_connect(GroupMaster, "toggled", (GCallback) radio_toggled, this);
   gtk_widget_show(radio);
+}
+void CRadioGroup::CheckSelected()
+{
+  //g_print("Radiogroup changed [%d]\n",GetChecked());
+  if (selectedindex!=GetChecked())
+  {
+    selectedindex=GetChecked();
+    OnChange();
+  }
 }
 
 void CRadioGroup::OnChange()
