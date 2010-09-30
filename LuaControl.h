@@ -19,6 +19,9 @@ enum
 	evMax
 };
 
+bool function_ref(lua_State* L, int idx, int* pr); //get function pointer -- idx=param-number pr=pointer to int which holds the function-ref
+void dispatch_ref(lua_State* L,int idx, int ival); //call function
+
 class LuaControl
 {
   protected:
@@ -30,6 +33,7 @@ class LuaControl
     virtual ~LuaControl();
     void removeEvent(int EventID);
     void setEvent(int EventID,int idx);
+    lua_State *GetLuaState(){return L;};
     //void SetControlType(int ct);
     //int GetControlType() {return ControlType;}
 };

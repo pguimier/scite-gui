@@ -18,8 +18,12 @@ gui.Listview_Set_Item(lv,row,1,"i1c2")
 row=gui.Listview_Add_Item(lv,"Item2")
 gui.Listview_Set_Item(lv,row,1,"i2c2")
 
+function menu_test()
+  print("Menuitem :)")
+end
+
 pu=gui.New_Popup(lv)
-gui.Popup_Add_Item(pu,"test1",1)
+gui.Popup_Add_Item(pu,"test1",menu_test)
 gui.Popup_Add_Item(pu,"test2",2)
 gui.Popup_Add_Item(pu,"",-1)
 gui.Popup_Add_Item(pu,"test3",3)

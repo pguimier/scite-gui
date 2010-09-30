@@ -9,11 +9,11 @@ class CButton:public GtkControl
     //GtkWidget *Button;
   protected:
     //virtual void SetWidget(GtkWidget *w);
+    void SetCaption(const char*caption);
     virtual GtkWidget *CreateButtonWidget(const char*caption);
   public:
     CButton(GtkWidget *parent,const char*caption);
     virtual ~CButton();
-    void SetCaption(const char*caption);
 
     void OnClick();
 };
@@ -24,6 +24,7 @@ class CCheckBox:public CButton//GtkControl
     //GtkWidget *Button;
   protected:
     //virtual void SetWidget(GtkWidget *w);
+    using CButton::SetCaption; //derived from CButton -- newly added
     virtual GtkWidget *CreateButtonWidget(const char*caption);
   public:
     CCheckBox(GtkWidget *parent,const char*caption);

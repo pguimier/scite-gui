@@ -127,10 +127,27 @@ LuaButton::LuaButton(lua_State *l,GtkWidget *parent,const char *caption)
 }
 
 LuaPopupMenu::LuaPopupMenu(lua_State *l,GtkWidget *parent)
-  :LuaControl(l), CPopupMenu(parent)
+//  :LuaControl(l),CPopupMenu(parent)
+  :CPopupMenu(parent),Lua(l)
 {
+  //Lua=LuaControl(l);
   g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcPopupMenu)); //for Destroy
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
+}
+
+void LuaPopupMenu::AddMenuItem(const char*caption,int param_no)
+{
+  int id;
+  function_ref(Lua.GetLuaState(), param_no,&id);
+  g_print("got id %x from param_no %x\n",id,param_no);
+  dispatch_ref(Lua.GetLuaState(),id, 0);
+  CPopupMenu::AddMenuItem(caption,id); //calling method from baseclass with id
+}
+
+void LuaPopupMenu::OnClick(GtkWidget *Menuitem,int ID)
+{
+  g_print("OnClick-ID: %x\n",ID);
+  dispatch_ref(Lua.GetLuaState(),ID, 0);
 }
 
 LuaRadioGroup::LuaRadioGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first)

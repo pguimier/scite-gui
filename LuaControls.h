@@ -88,15 +88,18 @@ class LuaButton:public LuaControl,public CButton
     virtual ~LuaButton() {};
 };
 
-class LuaPopupMenu:public LuaControl,public CPopupMenu
+class LuaPopupMenu:/*public LuaControl,*/public CPopupMenu
 {
   private:
   
   protected:
   
   public:
+    LuaControl Lua;
     LuaPopupMenu(lua_State *l,GtkWidget *parent);
     virtual ~LuaPopupMenu() {};
+    virtual void AddMenuItem(const char*caption,int param_no);
+    virtual void OnClick(GtkWidget *Menuitem,int ID);
 };
 
 class LuaRadioGroup:public LuaControl,public CRadioGroup

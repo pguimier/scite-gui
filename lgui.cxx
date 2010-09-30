@@ -241,7 +241,7 @@ static int do_PopupAddItem(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Chi
   //int ArgumentCount = lua_gettop(L);
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
-  int id=luaL_checkinteger(L,3);
+  //int id=luaL_checkinteger(L,3);
   
   g_print("adding MenuItem %s to Popupmenu %x\n",caption,int(iLuaControl));
 
@@ -250,7 +250,9 @@ static int do_PopupAddItem(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Chi
   if (wrp->wc==lcPopupMenu)
   {
     LuaPopupMenu *Popup=reinterpret_cast<LuaPopupMenu*>(wrp->window);
-    Popup->AddMenuItem(caption,id);
+    //Popup->AddMenuItem(caption,id);
+    g_print("PopupClass:%x\n",Popup);
+    Popup->AddMenuItem(caption,3); //use 3rd param to get function pointer
   } else g_print("Not a PopupMenu (AddItem)!\n");
   return 0;
 }
