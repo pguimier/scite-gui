@@ -109,6 +109,7 @@ int CListView::AddColumn(const char *caption)
     "text", fColCount,
     NULL);
   gtk_tree_view_column_set_resizable  (gtk_tree_view_get_column(GTK_TREE_VIEW (GetWidget()),fColCount-1),true);
+  return fColCount;
 }
 
 int CListView::GetRowFromIter(GtkTreeIter &iter)

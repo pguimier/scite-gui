@@ -251,7 +251,7 @@ static int do_PopupAddItem(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Chi
   {
     LuaPopupMenu *Popup=reinterpret_cast<LuaPopupMenu*>(wrp->window);
     //Popup->AddMenuItem(caption,id);
-    g_print("PopupClass:%x\n",Popup);
+    g_print("PopupClass:%x\n",int(Popup));
     Popup->AddMenuItem(caption,3); //use 3rd param to get function pointer
   } else g_print("Not a PopupMenu (AddItem)!\n");
   return 0;
@@ -346,14 +346,14 @@ static TWin* window_arg(lua_State* L, int idx = 1)
 }
 
 //new_*-functions returning a wrap_window(L,control_class);
-*/
+
 static int window_on_select(lua_State *L)
 {
 	// LuaControl* lc = dynamic_cast<LuaControl*>(window_arg(L,1));
 	// lc->set_select(2);
 	return 0;
 }
-
+*/
 static const struct luaL_reg window_methods[] = {
 	// {"show",window_show},
 	// {"hide",window_hide},

@@ -1,0 +1,65 @@
+Sidebar-Handle: 0x921c0c8
+width: 576, sbWidth: 200[Right] width: 576, sbWidth: 200
+Sidebar-Handle (Scite): 0x921c0c8
+Sidebar-Handle: 0x921c0c8 (PageControl-Class)
+Sidebar-Handle (Scite): 0x921c0c8
+Adding Pagecontrol to Parent 0x921c0c8...
+Page switched to Page #0
+Page-Widget: 921c120
+Adding Listview to Parent 0x0...
+Listview-Widget: 9345100
+Listview->AddColumn
+Listview:CastToLuaListview
+Listview->AddColumn
+Listview:CastToLuaListview
+Add Item (Item1)
+Add Item (Item2)
+GetWidgetFromWrapPointer
+Listview
+Adding Popup to Parent 0x9345100...
+Popup-Widget: 924b5b8
+adding MenuItem test1 to Popupmenu 934d85c
+got id 933eaf0 from param_no 3
+CPopupMenu-ClassPointer: 934d6b8
+adding MenuItem test2 to Popupmenu 934d85c
+got id 933eaf0 from param_no 3
+CPopupMenu-ClassPointer: 934d6b8
+adding MenuItem  to Popupmenu 934d85c
+got id 933eaf0 from param_no 3
+adding MenuItem test3 to Popupmenu 934d85c
+got id 933eaf0 from param_no 3
+CPopupMenu-ClassPointer: 934d6b8
+Adding Button to Parent 0x0...
+Button-Widget: 921e1e8
+Adding Pagecontrol to Parent 0x921c120...
+Adding Pagecontrol to Parent 0x0...
+adding Child1: 9344d54 and Child2: 934412c to Splitter 91cf014
+GetWidgetFromWrapPointer
+Listview
+GetWidgetFromWrapPointer
+Splitter
+Adding Pagecontrol to Parent 0x0...
+adding Child1: 934da14 and Child2: 91cf5c4 to Splitter 934412c
+GetWidgetFromWrapPointer
+Button
+GetWidgetFromWrapPointer
+PageControl
+Page switched to Page #0
+Page-Widget: 921c228
+Adding RadioGroup to Parent 0x921c228...
+CRadioGroup set Widget [921c280]/Parent [921c228]
+RadioGroup-Widget: 921c280
+Page-Widget: 921c2d8
+Page-Widget: 921c330
+[5] Width: 190, Height: 166
+[0] Width: 192, Height: 193
+[3] Width: 192, Height: 77
+[2] Width: 192, Height: 276
+[1] Width: 192, Height: 181
+[2] Width: 192, Height: 463
+[0] Width: 194, Height: 490
+[4] Width: 87, Height: 87
+casting to CPopupmenu...
+casting 9322aa0 to CPopupmenu done,call m->GetWidget
+Segmentation fault
+
