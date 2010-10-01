@@ -236,13 +236,23 @@ static int do_SplitterSetClients(lua_State *L) //gui.Splitter_Set_Clients(Splitt
   return 0;
 }
 
-static int do_PopupAddItem(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Child1,Child2)
+int get_function_ref(lua_State *L)
+{
+  int ref=0;
+  if (!lua_isfunction(L, -1)) //Judging wheather it is a function object the top element of the stack (last param)
+	{
+		g_print("PopupMenuAddItem: 3rd Parameter is not a function!\n");
+	}else	ref = luaL_ref(L, LUA_REGISTRYINDEX); //fetch the function reference value
+	return ref;
+}
+
+static int do_PopupAddItem(lua_State *L) //gui.Popup_Add_Item(Popup,caption,function)
 {
   //int ArgumentCount = lua_gettop(L);
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
   //int id=luaL_checkinteger(L,3);
-  
+  //lua_pop(L,2); //pop the first 2 elements from stack so that function-pointer is on top
   g_print("adding MenuItem %s to Popupmenu %x\n",caption,int(iLuaControl));
 
   WinWrap *wrp=(WinWrap*)iLuaControl;
@@ -252,7 +262,12 @@ static int do_PopupAddItem(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Chi
     LuaPopupMenu *Popup=reinterpret_cast<LuaPopupMenu*>(wrp->window);
     //Popup->AddMenuItem(caption,id);
     g_print("PopupClass:%x\n",int(Popup));
-    Popup->AddMenuItem(caption,3); //use 3rd param to get function pointer
+    
+    int ref=get_function_ref(L);
+    lua_pop(L, 3); // clean the stack, removing 3 Elements
+
+    Popup->AddMenuItem(caption,ref);
+    
   } else g_print("Not a PopupMenu (AddItem)!\n");
   return 0;
 }

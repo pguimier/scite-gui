@@ -98,7 +98,7 @@ class LuaPopupMenu:/*public LuaControl,*/public CPopupMenu
     LuaControl Lua;
     LuaPopupMenu(lua_State *l,GtkWidget *parent);
     virtual ~LuaPopupMenu() {};
-    virtual void AddMenuItem(const char*caption,int param_no);
+    virtual void AddMenuItem(const char*caption,int ref);
     virtual void OnClick(GtkWidget *Menuitem,int ID);
 };
 
