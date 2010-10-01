@@ -103,12 +103,10 @@ void GtkControl::CheckSize(int width,int height)
   }
 }
 
-
 void GtkControl::OnResize(int width,int height)
 {
   int wc=int(g_object_get_data (G_OBJECT(widget),"WindowClass"));
 
   g_print("[%d] Width: %d, Height: %d\n",wc,width,height);
 }
-
 

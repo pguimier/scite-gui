@@ -11,7 +11,6 @@ void button_clicked(GtkWidget *button, gpointer   user_data)
 void radio_toggled(GtkWidget *radio, gpointer   user_data)
 {
   CRadioGroup *rg=(CRadioGroup*)user_data;
-  //rg->OnChange();
   rg->CheckSelected();
 }
 
@@ -23,10 +22,7 @@ GtkWidget *CButton::CreateButtonWidget(const char*caption)
 CButton::CButton(GtkWidget *parent,const char*caption)
 {
   GtkWidget *Button=CreateButtonWidget(caption);
-  
-  //gtk_widget_show(Button);
-  //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
-  //g_object_set_data(G_OBJECT(Button),"ClassPointer",this);
+
   g_signal_connect(Button, "clicked", (GCallback) button_clicked, this);
   
   SetWidget(Button);
@@ -35,8 +31,7 @@ CButton::CButton(GtkWidget *parent,const char*caption)
 
 CButton::~CButton()
 {
-  // if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
-    // gtk_widget_destroy(GetWidget());
+
 }
 
 void CButton::SetCaption(const char*caption)
@@ -57,16 +52,13 @@ GtkWidget *CCheckBox::CreateButtonWidget(const char*caption)
 
 CCheckBox::CCheckBox(GtkWidget *parent,const char*caption)
   :CButton(parent,caption)
-{/*
+{
   GtkWidget *Checkbox=gtk_check_button_new_with_label (caption);
-  
-  //gtk_widget_show(Checkbox);
-  //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
-  //g_object_set_data(G_OBJECT(Checkbox),"ClassPointer",this);
+
   //g_signal_connect(Checkbox, "clicked", (GCallback) button_clicked, this);
   
   SetWidget(Checkbox);
-  SetParent(parent);*/
+  SetParent(parent);
 }
 
 CCheckBox::~CCheckBox()
@@ -97,7 +89,7 @@ CRadioGroup::CRadioGroup(GtkWidget *parent,const char*caption_of_first)
   g_object_set_data(G_OBJECT(Radiogroup),"ClassPointer",this);
   g_object_set_data(G_OBJECT(GroupMaster),"ID",gpointer(radiocount++));
   g_signal_connect(GroupMaster, "toggled", (GCallback) radio_toggled, this);
-  g_print("CRadioGroup set Widget [%x]/Parent [%x]\n",int(Radiogroup),int(parent));
+//  g_print("CRadioGroup set Widget [%x]/Parent [%x]\n",int(Radiogroup),int(parent));
   SetWidget(Radiogroup);
   SetParent(parent);
   //gtk_widget_set_size_request (Radiogroup,0,0);

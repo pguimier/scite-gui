@@ -3157,7 +3157,6 @@ void SciTEGTK::CreateUI() {
 	  //gtk_widget_hide(SidebarContainer);
 	}
   gtk_widget_set_size_request(SidebarContainer,sbWidth,-1);
-  g_print("width: %d, sbWidth: %d",width,sbWidth);
 	if (props.GetInt("sidebar.left") == 1) {
 		gtk_paned_pack1(GTK_PANED(hPane), SidebarContainer,true,true);
 		gtk_paned_pack2(GTK_PANED(hPane), boxMainHPane,true,true);
@@ -3589,16 +3588,14 @@ int main(int argc, char *argv[]) {
 void SciTEGTK::SidebarInitUI() 
 {
   SidebarContainer = gtk_vbox_new(true,0);
-	//SidebarContainer = gtk_notebook_new();
-	//gtk_notebook_set_scrollable (GTK_NOTEBOOK(SidebarContainer),true);
 
-  g_print("Sidebar-Handle: 0x%x\n",int(SidebarContainer));
+//  g_print("Sidebar-Handle: 0x%x\n",int(SidebarContainer));
 	gtk_widget_show(SidebarContainer);
 }
 
 void *SciTEGTK::GetSidebarHandle()
 {
-  g_print("Sidebar-Handle (Scite): 0x%x\n",int(SidebarContainer));
+//  g_print("Sidebar-Handle (Scite): 0x%x\n",int(SidebarContainer));
   return SidebarContainer;
 }
 //!-end-[Sidebar]

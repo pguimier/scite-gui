@@ -7,7 +7,7 @@
 #include "Splitter.h"
 #include "Buttons.h"
 #include "Menu.h"
-
+/*
 enum WindowClasses
 {
 	lcPageControl=0,
@@ -19,11 +19,11 @@ enum WindowClasses
   
 	lcMax
 };
-
+*/
 //code taken from gui_ext.cpp by Steve Donovan
 //extern const char* WINDOW_CLASS = "WINDOW*";
 extern const char WINDOW_CLASS[];
-
+/*
 struct WinWrap {
   int wc;
 	void *window;
@@ -40,9 +40,9 @@ static int wrap_window(lua_State* L, void *win, int WindowClass)
 //	lua_setmetatable(L,-2);
 	return 1;
 }
-
+*/
 void free_children(GtkContainer *c);
-GtkWidget *GetWidgetFromWrapPointer(void *p);
+//GtkWidget *GetWidgetFromWrapPointer(void *p);
 
 class LuaPageControl:/*public LuaControl,*/public CPageControl
 {
@@ -68,6 +68,7 @@ class LuaListView:/*public LuaControl,*/public CListView
     LuaListView(lua_State *l,GtkWidget *parent);
     virtual ~LuaListView() {};
     virtual void OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col);
+    virtual int AddNewItem(const char *caption);
 };
 
 class LuaSplitter:/*public LuaControl,*/public CSplitter
