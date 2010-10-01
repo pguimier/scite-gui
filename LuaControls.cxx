@@ -97,7 +97,7 @@ void luacontrol_destroy(GtkWidget *widget, gpointer user_data)
 }
 
 LuaPageControl::LuaPageControl(lua_State *l,GtkWidget *parent)
-  :LuaControl(l), CPageControl(parent)
+  :CPageControl(parent),Lua(l)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"ClassPointer",this);
   //g_object_set_data(G_OBJECT(this->GetWidget()),"ClassType",reinterpret_cast<void*>(Type_LuaPageControl));
@@ -105,22 +105,44 @@ LuaPageControl::LuaPageControl(lua_State *l,GtkWidget *parent)
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
 }
 
+void LuaPageControl::OnPageSwitch(int page_num)
+{
+  g_print("Tab changed to %d\n",page_num);
+  int ref=Lua.GetEvent(evChange);
+  if (ref)
+  {
+    dispatch_ref(Lua.GetLuaState(),ref, page_num);
+  }
+}
+
 LuaListView::LuaListView(lua_State *l,GtkWidget *parent)
-  :LuaControl(l), CListView(parent)
+  : CListView(parent),Lua(l)
 {
   g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcListView)); //for Destroy
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
 }
 
+void LuaListView::OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col)
+{
+  int *indices = gtk_tree_path_get_indices (path);
+  int row = indices[0];
+  g_print("doubleclick on row %d\n",row);
+  int ref=Lua.GetEvent(evDoubleClick);
+  if (ref)
+  {
+    dispatch_ref(Lua.GetLuaState(),ref, row);
+  }
+}
+ 
 LuaSplitter::LuaSplitter(lua_State *l,GtkWidget *parent,bool vertical)
-  :LuaControl(l), CSplitter(parent,vertical)
+  :CSplitter(parent,vertical),Lua(l)
 {
   g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcSplitter)); //for Destroy
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
 }
 
 LuaButton::LuaButton(lua_State *l,GtkWidget *parent,const char *caption)
-  :LuaControl(l), CButton(parent,caption)
+  :CButton(parent,caption),Lua(l)
 {
   g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcButton)); //for Destroy
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
@@ -148,7 +170,7 @@ void LuaPopupMenu::OnClick(GtkWidget *Menuitem,int ID)
 }
 
 LuaRadioGroup::LuaRadioGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first)
-  :LuaControl(l), CRadioGroup(parent,caption_of_first)
+  : CRadioGroup(parent,caption_of_first),Lua(l)
 {
   g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);

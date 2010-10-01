@@ -111,14 +111,18 @@ void LuaControl::removeEvent(int EventID)
   }
 }
 
-void LuaControl::setEvent(int EventID,int idx)
+void LuaControl::SetEvent(int EventID,int ref)
 {
   //call function_ref to get pointer and set it to new adress
   removeEvent(EventID);
-	lua_pushvalue(L,idx);
-	events[EventID]= luaL_ref(L,LUA_REGISTRYINDEX);
+	//lua_pushvalue(L,idx);
+	events[EventID]=ref; //luaL_ref(L,LUA_REGISTRYINDEX);
 }
 
+int LuaControl::GetEvent(int EventID)
+{
+  return events[EventID];
+}
 /*
 void LuaControl::SetControlType(int ct)
 {

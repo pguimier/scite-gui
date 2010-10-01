@@ -10,11 +10,11 @@ extern "C" {
 
 enum
 {
-	evClicked=0,//without parameter
-	evDoubleClicked,//without parameter
+	evClick=0,//without parameter
+	evDoubleClick,//parameter: new index
+	evChange,//used for Pagecontrol-switch; new index
 	evMouseDown,//parameters: mouse-button and position
 	evMouseUp,//parameters: mouse-button and position
-	evSelChanged,//also used for Pagecontrol-switch; without paramaters
 	
 	evMax
 };
@@ -32,7 +32,8 @@ class LuaControl
     LuaControl(lua_State *l);
     virtual ~LuaControl();
     void removeEvent(int EventID);
-    void setEvent(int EventID,int idx);
+    void SetEvent(int EventID,int ref);
+    int GetEvent(int EventID);
     lua_State *GetLuaState(){return L;};
     //void SetControlType(int ct);
     //int GetControlType() {return ControlType;}

@@ -31,6 +31,7 @@ void RowActivated (GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn  
      g_free(name);
   }*/
   CListView *lv=(CListView*)user_data;
+  
   lv->OnRowActivated(path,col);
 }
 

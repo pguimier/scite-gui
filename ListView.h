@@ -17,5 +17,5 @@ class CListView:public GtkControl
     GtkTreeIter AddItem(const char *caption);
     int GetRowFromIter(GtkTreeIter &iter);
     int AddColumn(const char *caption);
-    void OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col);
+    virtual void OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col);
 };

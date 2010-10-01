@@ -44,46 +44,52 @@ static int wrap_window(lua_State* L, void *win, int WindowClass)
 void free_children(GtkContainer *c);
 GtkWidget *GetWidgetFromWrapPointer(void *p);
 
-class LuaPageControl:public LuaControl,public CPageControl
+class LuaPageControl:/*public LuaControl,*/public CPageControl
 {
   private:
   
   protected:
   
   public:
+    LuaControl Lua;
     LuaPageControl(lua_State *l,GtkWidget *parent);
     virtual ~LuaPageControl() {};
+    virtual void OnPageSwitch(int page_num);
 };
 
-class LuaListView:public LuaControl,public CListView
+class LuaListView:/*public LuaControl,*/public CListView
 {
   private:
   
   protected:
   
   public:
+    LuaControl Lua;
     LuaListView(lua_State *l,GtkWidget *parent);
     virtual ~LuaListView() {};
+    virtual void OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col);
 };
 
-class LuaSplitter:public LuaControl,public CSplitter
+class LuaSplitter:/*public LuaControl,*/public CSplitter
 {
   private:
   
   protected:
   
   public:
+    LuaControl Lua;
     LuaSplitter(lua_State *l,GtkWidget *parent,bool vertical);
     virtual ~LuaSplitter() {};
 };
 
-class LuaButton:public LuaControl,public CButton
+class LuaButton:/*public LuaControl,*/public CButton
 {
   private:
   
   protected:
   
   public:
+    LuaControl Lua;
     LuaButton(lua_State *l,GtkWidget *parent,const char *caption);
     virtual ~LuaButton() {};
 };
@@ -102,13 +108,14 @@ class LuaPopupMenu:/*public LuaControl,*/public CPopupMenu
     virtual void OnClick(GtkWidget *Menuitem,int ID);
 };
 
-class LuaRadioGroup:public LuaControl,public CRadioGroup
+class LuaRadioGroup:/*public LuaControl,*/public CRadioGroup
 {
   private:
   
   protected:
   
   public:
+    LuaControl Lua;
     LuaRadioGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first);
     virtual ~LuaRadioGroup() {};
 };
