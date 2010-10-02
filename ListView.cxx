@@ -91,7 +91,7 @@ bool CListView::SetValue(int row,int col,const char *value)
 
 GtkTreeIter CListView::AddItem(const char *caption)
 {
-  g_print("Add Item (%s)\n",caption);
+  //g_print("Add Item (%s)\n",caption);
   GtkTreeIter iter;
   gtk_list_store_append (store, &iter);
   gtk_list_store_set (store, &iter,0, caption,-1);

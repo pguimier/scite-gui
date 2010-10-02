@@ -55,8 +55,11 @@ void dispatch_ref(lua_State* L,int idx, int ival) //call function ival=param for
 		lua_pushnumber(L,ival); //param for lua function
 		
     int res=lua_pcall(L,1,0,0);
-    g_print("lua_pcall-result: %d\n",res);
-		if (res != 0) OutputMessage(L);// lua_error(L);
+    if (res)
+    {
+      g_print("lua_pcall-result: %d\n",res);
+		  OutputMessage(L);// lua_error(L);
+		}
 	}
 }
 

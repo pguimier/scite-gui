@@ -22,8 +22,6 @@ CEdit::CEdit(GtkWidget *parent,const char* label)
   //g_object_set_data(G_OBJECT(Edit),"ClassPointer",this);
   //g_signal_connect(Edit, "clicked", (GCallback) button_clicked, this);
   
-  
-  
   SetWidget(hBox);
   SetParent(parent);
 }

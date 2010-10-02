@@ -2,7 +2,7 @@
 
 #include "Menu.h"
 
-void menuitem_clicked(gpointer user_data,GtkWidget *menuitem)
+void menuitem_clicked(GtkWidget *menuitem,gpointer user_data)
 {
 //  g_print("menuitem: %x, User_data: %x\n",int(menuitem),int(user_data));
   CPopupMenu *m=(CPopupMenu*)user_data;
@@ -49,7 +49,7 @@ void CPopupMenu::AddMenuItem(const char*caption,int ID)
     g_object_set_data(G_OBJECT(menuitem),"ID",gpointer(ID));
     g_object_set_data(G_OBJECT(menuitem),"Class",this);
 //    g_print("CPopupMenu-ClassPointer (this): %x\n",int(this));
-    g_signal_connect_swapped(G_OBJECT(menuitem),"activate",G_CALLBACK(menuitem_clicked),this);
+    g_signal_connect/*_swapped*/(G_OBJECT(menuitem),"activate",G_CALLBACK(menuitem_clicked),this);
   }
   gtk_menu_shell_append(GTK_MENU_SHELL(GetWidget()),menuitem);
   gtk_widget_show (menuitem);
