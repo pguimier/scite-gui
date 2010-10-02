@@ -144,7 +144,7 @@ static int do_CreatePopup(lua_State *L) //popup=gui.New_Popup(parent)
   return 1;//return 1 value (handle)
 }
 
-static int do_CreateRadioGroup(lua_State *L) //btn=gui.New_RadioGroup(parent,"caption") --parent can be 0
+static int do_CreateRadioGroup(lua_State *L) //rg=gui.New_RadioGroup(parent,"caption") --parent can be 0
 {
   void *iParent=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
@@ -158,17 +158,43 @@ static int do_CreateRadioGroup(lua_State *L) //btn=gui.New_RadioGroup(parent,"ca
   return 1;//return 1 value (handle)
 }
 
-static int do_CreateCheckGroup(lua_State *L) //btn=gui.New_CheckGroup(parent,"caption") --parent can be 0
+static int do_CreateCheckGroup(lua_State *L) //cg=gui.New_CheckGroup(parent,"caption") --parent can be 0
 {
   void *iParent=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
   
-  g_print("Adding CheckGroup to Parent 0x%x...\n",int(iParent));
+  //g_print("Adding CheckGroup to Parent 0x%x...\n",int(iParent));
 
   LuaCheckGroup *Checkgroup=new LuaCheckGroup(L,GTK_WIDGET(iParent),caption);
   
-  g_print("CheckGroup-Widget: %x\n",int(Checkgroup->GetWidget()));
-  lua_pushlightuserdata(L,Checkgroup); //put pointer of RadioGroup to stack
+  //g_print("CheckGroup-Widget: %x\n",int(Checkgroup->GetWidget()));
+  lua_pushlightuserdata(L,Checkgroup); //put pointer of CheckGroup to stack
+  return 1;//return 1 value (handle)
+}
+
+static int do_CreateEdit(lua_State *L) //edit=gui.New_Edit(parent,"label") --parent can be 0
+{
+  void *iParent=lua_touserdata(L,1);
+  const char *label=luaL_checkstring(L,2);
+  //g_print("Adding Edit to Parent 0x%x...\n",int(iParent));
+
+  LuaEdit *Edit=new LuaEdit(L,GTK_WIDGET(iParent),label);
+  
+  //g_print("Edit-Widget: %x\n",int(Edit->GetWidget()));
+  lua_pushlightuserdata(L,Edit); //put pointer of RadioGroup to stack
+  return 1;//return 1 value (handle)
+}
+
+static int do_CreateMemo(lua_State *L) //memo=gui.New_Memo(parent) --parent can be 0
+{
+  void *iParent=lua_touserdata(L,1);
+  
+  //g_print("Adding Memo to Parent 0x%x...\n",int(iParent));
+
+  LuaMemo *Memo=new LuaMemo(L,GTK_WIDGET(iParent));
+  
+  //g_print("Memo-Widget: %x\n",int(Memo->GetWidget()));
+  lua_pushlightuserdata(L,Memo); //put pointer of Memo to stack
   return 1;//return 1 value (handle)
 }
 
@@ -329,6 +355,8 @@ static const luaL_reg R[] =
   { "New_Popup", do_CreatePopup },
   { "New_Radiogroup", do_CreateRadioGroup },
   { "New_Checkgroup", do_CreateCheckGroup },
+  { "New_Edit", do_CreateEdit },
+  { "New_Memo", do_CreateMemo },
   
   { "Set_Event", do_SetEvent},
 	{ NULL,			NULL	}

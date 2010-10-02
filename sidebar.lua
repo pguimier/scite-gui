@@ -12,7 +12,7 @@ end
 
 local pc1tab1=gui.Pagecontrol_Add_Page(pagecontrol,"1st Page")
 local pc1tab2=gui.Pagecontrol_Add_Page(pagecontrol,"2nd Page")
-local pc1tab3=gui.Pagecontrol_Add_Page(pagecontrol,"3rd Page")
+--local pc1tab3=gui.Pagecontrol_Add_Page(pagecontrol,"3rd Page")
 
 gui.Set_Event(pagecontrol,2,tab_change)--radiogroup,evChange,function
 
@@ -69,6 +69,7 @@ gui.Splitter_Set_Clients(spl,lv,spl2)
 local pagecontrol2=gui.New_Pagecontrol(0)
 local pc2tab1=gui.Pagecontrol_Add_Page(pagecontrol2,"pc2t1")
 local pc2tab2=gui.Pagecontrol_Add_Page(pagecontrol2,"pc2t2")
+local pc2tab3=gui.Pagecontrol_Add_Page(pagecontrol2,"pc2t3")
 
 function tab_change2(selected)
   print("PageControl#2 changed to Tab #"..selected)
@@ -95,4 +96,8 @@ function cg_change(selected)
   print("Item #"..selected.." in CheckGroup changed")
 end
 gui.Set_Event(check,2,cg_change)--checkgroup,evChange,function
+
+--edit
+local edit=gui.New_Edit(pc2tab3,"Text: ")
+local memo=gui.New_Memo(pc2tab3)
 

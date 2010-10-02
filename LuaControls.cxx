@@ -229,3 +229,22 @@ void LuaCheckGroup::OnChange(GtkWidget *changed_item)
   }
 }
 
+LuaEdit::LuaEdit(lua_State *l,GtkWidget *parent,const char *label)
+  : CEdit(parent,label),Lua(l)
+{
+  //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
+  SetType(cEdit);
+  g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
+}
+
+LuaMemo::LuaMemo(lua_State *l,GtkWidget *parent)
+  : CMemo(parent),Lua(l)
+{
+  //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
+  SetType(cMemo);
+  g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
+}
+
+
+
+

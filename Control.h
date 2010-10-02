@@ -11,8 +11,13 @@ enum WindowTypes
   cRadioGroup,
   cCheckGroup,
 	cPopupMenu,
+	cEdit,
+	cMemo,
   cWindow,
   cBox,
+  cMessageBox,
+  cFileOpenDialog,
+  cFileSaveDialog,
   
 	cMax
 };

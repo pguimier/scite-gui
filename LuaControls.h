@@ -7,6 +7,7 @@
 #include "Splitter.h"
 #include "Buttons.h"
 #include "Menu.h"
+#include "TextControls.h"
 /*
 enum WindowClasses
 {
@@ -136,6 +137,31 @@ class LuaCheckGroup:/*public LuaControl,*/public CCheckGroup
     virtual void OnChange(GtkWidget *changed_item);
 };
 
+class LuaEdit:/*public LuaControl,*/public CEdit
+{
+  private:
+  
+  protected:
+  
+  public:
+    LuaControl Lua;
+    LuaEdit(lua_State *l,GtkWidget *parent,const char *label);
+    virtual ~LuaEdit() {};
+    //virtual void OnChange(GtkWidget *changed_item);
+};
+
+class LuaMemo:/*public LuaControl,*/public CMemo
+{
+  private:
+  
+  protected:
+  
+  public:
+    LuaControl Lua;
+    LuaMemo(lua_State *l,GtkWidget *parent);
+    virtual ~LuaMemo() {};
+    //virtual void OnChange(GtkWidget *changed_item);
+};
 
 #endif
 

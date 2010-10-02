@@ -2,15 +2,13 @@
 
 #include "GTKControl.h"
 
-//http://library.gnome.org/devel/gtk/unstable/GtkNotebook.html
+//http://library.gnome.org/devel/gtk/stable/GtkEntry.html
 class CEdit:public GtkControl
 {
   private:
-    //GtkWidget *Button;
   protected:
-    //virtual void SetWidget(GtkWidget *w);
   public:
-    CEdit(GtkWidget *parent);
+    CEdit(GtkWidget *parent,const char* label);
     virtual ~CEdit();
     void SetText(const char* text);
     const char* GetText();
@@ -22,9 +20,9 @@ class CEdit:public GtkControl
 class CMemo:public GtkControl
 {
   private:
-    //GtkWidget *Button;
+
   protected:
-    //virtual void SetWidget(GtkWidget *w);
+
   public:
     CMemo(GtkWidget *parent);
     virtual ~CMemo();

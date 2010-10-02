@@ -8,48 +8,50 @@ void button_clicked(GtkWidget *button, gpointer   user_data)
   b->OnClick();
 }
 */
-CEdit::CEdit(GtkWidget *parent)
+CEdit::CEdit(GtkWidget *parent,const char* label)
 {
+  GtkWidget *hBox=gtk_hbox_new(false,2);
+  GtkWidget *lbl=gtk_label_new(label);
+  gtk_widget_show(lbl);
   GtkWidget *Edit=gtk_entry_new();
-  
-  //gtk_widget_show(Edit);
-
+  gtk_widget_show(Edit);
+  gtk_box_pack_start(GTK_BOX(hBox),lbl,true,true,1);
+  gtk_box_pack_end(GTK_BOX(hBox),Edit,true,true,1);
+  //gtk_widget_set_usize(hBox,-1,50);
   //int key=g_object_get_data (G_OBJECT(w),"ClassPointer");
   //g_object_set_data(G_OBJECT(Edit),"ClassPointer",this);
   //g_signal_connect(Edit, "clicked", (GCallback) button_clicked, this);
   
-  SetWidget(Edit);
+  
+  
+  SetWidget(hBox);
   SetParent(parent);
 }
 
 CEdit::~CEdit()
 {
-  // if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
-    // gtk_widget_destroy(GetWidget());
+
 }
 
 void CEdit::SetText(const char* text)
 {
-  gtk_entry_set_text(GTK_ENTRY(GetWidget()), text);
+  GtkWidget *Edit=GetItemFromContainer(GTK_CONTAINER(GetWidget()),1);
+  gtk_entry_set_text(GTK_ENTRY(Edit), text);
 }
 
 const char* CEdit::GetText()
 {
-  return gtk_entry_get_text(GTK_ENTRY(GetWidget()));
+  GtkWidget *Edit=GetItemFromContainer(GTK_CONTAINER(GetWidget()),1);
+  return gtk_entry_get_text(GTK_ENTRY(Edit));
 }
 
-/*
-void CButton::OnClick()
-{
-  g_print("button clicked\n");
-}
-*/
 
 CMemo::CMemo(GtkWidget *parent)
 {
   GtkWidget *Memo= gtk_text_view_new ();
   SetWidget(Memo);
   SetParent(parent);
+  gtk_widget_set_size_request (Memo,-1,200);
 }
 
 CMemo::~CMemo()

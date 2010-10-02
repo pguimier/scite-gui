@@ -2,7 +2,10 @@
 
 #include "GTKControl.h"
 
-//http://library.gnome.org/devel/gtk/unstable/GtkNotebook.html
+//http://library.gnome.org/devel/gtk/stable/GtkButton.html
+//http://library.gnome.org/devel/gtk/stable/GtkCheckButton.html
+//http://library.gnome.org/devel/gtk/stable/GtkRadioButton.html
+
 class CButton:public GtkControl
 {
   private:

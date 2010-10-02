@@ -67,7 +67,7 @@ CListView::CListView(GtkWidget *parent/*,int cols*/)
   //g_object_set_data(G_OBJECT(ListView),"ClassPointer",this);
   SetWidget(ListView);
   SetParent(parent);
-  gtk_widget_set_size_request (ListView,-1,-1);
+  gtk_widget_set_size_request (ListView,-1,200);
 }
 
 CListView::~CListView()
@@ -166,6 +166,19 @@ ghb_selected_subtitle_row(signal_user_data_t *ud)
 
 */
 
+void CListView::Clear()
+{
+  gtk_list_store_clear(store);
+}
+
+void CListView::RemoveRow(int row)
+{
+  GtkTreeIter iter;
+  if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(store), &iter, NULL, row))
+  {
+    gtk_list_store_remove (store,&iter);
+  }
+}
 
 void CListView::OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col)
 {
