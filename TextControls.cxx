@@ -49,9 +49,16 @@ const char* CEdit::GetText()
 CMemo::CMemo(GtkWidget *parent)
 {
   GtkWidget *Memo= gtk_text_view_new ();
-  SetWidget(Memo);
+  
+  GtkWidget *ScrollBox=gtk_scrolled_window_new(NULL,NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(ScrollBox),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
+  gtk_container_add(GTK_CONTAINER(ScrollBox),Memo);
+  gtk_widget_show(ScrollBox);
+  gtk_widget_show(Memo);
+  
+  SetWidget(ScrollBox);
   SetParent(parent);
-  gtk_widget_set_size_request (Memo,-1,200);
+  //gtk_widget_set_size_request (Memo,-1,200);
 }
 
 CMemo::~CMemo()

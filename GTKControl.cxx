@@ -93,8 +93,10 @@ void GtkControl::SetParent(GtkWidget *parent)
     if (GTK_IS_BOX(parent))
     {
       //g_print("box-parent (%x)\n",int(parent));
-      
-      gtk_box_pack_start(GTK_BOX(parent),widget, TRUE, TRUE, 0);
+      if (GTK_IS_ENTRY(widget)||GTK_IS_BUTTON(widget)||GTK_IS_BOX(widget))
+        gtk_box_pack_start(GTK_BOX(parent),widget, FALSE, FALSE, 0);
+      else
+        gtk_box_pack_start(GTK_BOX(parent),widget, TRUE, TRUE, 0);
     }else if (GTK_IS_CONTAINER(parent))
     {
       //g_print("container-parent (%x)\n",int(parent));
