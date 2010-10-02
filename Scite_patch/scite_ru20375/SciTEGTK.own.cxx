@@ -3587,7 +3587,7 @@ int main(int argc, char *argv[]) {
 //!-start-[Sidebar]
 void SciTEGTK::SidebarInitUI() 
 {
-  SidebarContainer = gtk_vbox_new(true,0);
+  SidebarContainer = gtk_vbox_new(false,0);
 
 //  g_print("Sidebar-Handle: 0x%x\n",int(SidebarContainer));
 	gtk_widget_show(SidebarContainer);

@@ -24,7 +24,7 @@ CPageControl::~CPageControl()
 GtkWidget *CPageControl::AddPage(const char *caption,int position)
 {
 	GtkWidget *label=gtk_accel_label_new(caption);
-  GtkWidget *vbox=gtk_vbox_new(2,false);
+  GtkWidget *vbox=gtk_vbox_new(false,2);
 	gtk_widget_show(vbox);
 	
 	gtk_notebook_insert_page(GTK_NOTEBOOK(GetWidget()),vbox,label,position);

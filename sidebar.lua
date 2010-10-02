@@ -52,7 +52,7 @@ gui.Popup_Add_Item(pu,"",0)
 gui.Popup_Add_Item(pu,"test3",menu_test3)
 
 --Button
-local btn=gui.New_Button(0,"Test")
+local btn=gui.New_Button(scite.GetSidebarHandle(),"Test")
 
 function button_clicked()
   print("button clicked")
@@ -62,8 +62,6 @@ gui.Set_Event(btn,0,button_clicked)--button,evClick,function
 --Splitter
 local spl=gui.New_Splitter(pc1tab1,true)
 
-local spl2=gui.New_Splitter(0,true)
-gui.Splitter_Set_Clients(spl,lv,spl2)
 
 --another PageControl
 local pagecontrol2=gui.New_Pagecontrol(0)
@@ -76,8 +74,9 @@ function tab_change2(selected)
 end
 gui.Set_Event(pagecontrol2,2,tab_change2)--radiogroup,evChange,function
 
+gui.Splitter_Set_Clients(spl,lv,pagecontrol2)
 
-gui.Splitter_Set_Clients(spl2,btn,pagecontrol2);
+--gui.Splitter_Set_Clients(spl2,btn,pagecontrol2);
 
 --RadioGroup
 local radio=gui.New_Radiogroup(pc2tab1,"1st choice")
