@@ -160,6 +160,16 @@ LuaButton::LuaButton(lua_State *l,GtkWidget *parent,const char *caption)
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
 }
 
+void LuaButton::OnClick()
+{
+  g_print("LuaButton-Click\n");
+  int ref=Lua.GetEvent(evClick);
+  if (ref)
+  {
+    dispatch_ref(Lua.GetLuaState(),ref, 0);
+  }
+}
+
 LuaPopupMenu::LuaPopupMenu(lua_State *l,GtkWidget *parent)
 //  :LuaControl(l),CPopupMenu(parent)
   :CPopupMenu(parent),Lua(l)
@@ -188,5 +198,34 @@ LuaRadioGroup::LuaRadioGroup(lua_State *l,GtkWidget *parent,const char *caption_
   //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
   SetType(cRadioGroup);
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
+}
+
+void LuaRadioGroup::OnChange(int selected)
+{
+  g_print("LuaRadioGroup-Change\n");
+  int ref=Lua.GetEvent(evChange);
+  if (ref)
+  {
+    dispatch_ref(Lua.GetLuaState(),ref, selected);
+  }
+}
+
+LuaCheckGroup::LuaCheckGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first)
+  : CCheckGroup(parent,caption_of_first),Lua(l)
+{
+  //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
+  SetType(cCheckGroup);
+  g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
+}
+
+void LuaCheckGroup::OnChange(GtkWidget *changed_item)
+{
+  g_print("LuaCheckGroup-Change\n");
+  int ref=Lua.GetEvent(evChange);
+  if (ref)
+  {
+    int i=GetIndexFromContainer(GTK_CONTAINER(GetWidget()),changed_item);
+    dispatch_ref(Lua.GetLuaState(),ref, i);
+  }
 }
 

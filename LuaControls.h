@@ -93,6 +93,7 @@ class LuaButton:/*public LuaControl,*/public CButton
     LuaControl Lua;
     LuaButton(lua_State *l,GtkWidget *parent,const char *caption);
     virtual ~LuaButton() {};
+    virtual void OnClick();
 };
 
 class LuaPopupMenu:/*public LuaControl,*/public CPopupMenu
@@ -119,6 +120,20 @@ class LuaRadioGroup:/*public LuaControl,*/public CRadioGroup
     LuaControl Lua;
     LuaRadioGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first);
     virtual ~LuaRadioGroup() {};
+    virtual void OnChange(int selected);
+};
+
+class LuaCheckGroup:/*public LuaControl,*/public CCheckGroup
+{
+  private:
+  
+  protected:
+  
+  public:
+    LuaControl Lua;
+    LuaCheckGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first);
+    virtual ~LuaCheckGroup() {};
+    virtual void OnChange(GtkWidget *changed_item);
 };
 
 

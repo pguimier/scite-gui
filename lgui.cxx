@@ -43,6 +43,16 @@ void dispatch_ref(lua_State* L,int idx, int ival) //call function
 
 #include "LuaControls.h"
 
+int get_function_ref(lua_State *L)
+{
+  int ref=0;
+  if (!lua_isfunction(L, -1)) //Judging wheather it is a function object the top element of the stack (last param)
+	{
+		g_print("Top Parameter is not a function!\n");
+	}else	ref = luaL_ref(L, LUA_REGISTRYINDEX); //fetch the function reference value
+	return ref;
+}
+
 static int do_InitSidebar(lua_State *L) //gui.InitSidebar(scite.GetSidebarHandle())
 {
   SidebarHandle=lua_touserdata(L,1);
@@ -51,6 +61,24 @@ static int do_InitSidebar(lua_State *L) //gui.InitSidebar(scite.GetSidebarHandle
   free_children(GTK_CONTAINER(SidebarHandle));
 
   return 1;
+}
+
+static int Set_Event(void *iControl,int evType,int functionref)
+{
+  GtkControl *Control=reinterpret_cast<GtkControl*>(iControl);
+  switch (Control->GetType())
+  {
+    case cPageControl: {LuaPageControl *c=dynamic_cast<LuaPageControl*>(Control);c->Lua.SetEvent(evType,functionref);} break;
+    case cListView: {LuaListView *c=dynamic_cast<LuaListView*>(Control);c->Lua.SetEvent(evType,functionref);} break;
+	  case cSplitter: {LuaSplitter *c=dynamic_cast<LuaSplitter*>(Control);c->Lua.SetEvent(evType,functionref);} break;
+	  case cButton: {LuaButton *c=dynamic_cast<LuaButton*>(Control);c->Lua.SetEvent(evType,functionref);} break;
+    //case cCheckBox: {LuaPageControl *c=dynamic_cast<LuaPageControl*>(Control);c->Lua.SetEvent(evType,functionref);} break;
+    case cRadioGroup: {LuaRadioGroup *c=dynamic_cast<LuaRadioGroup*>(Control);c->Lua.SetEvent(evType,functionref);} break;
+    case cCheckGroup: {LuaCheckGroup *c=dynamic_cast<LuaCheckGroup*>(Control);c->Lua.SetEvent(evType,functionref);} break;
+  	//cPopupMenu,
+    //cWindow,
+    //cBox,
+  };
 }
 
 //creating controls
@@ -130,6 +158,20 @@ static int do_CreateRadioGroup(lua_State *L) //btn=gui.New_RadioGroup(parent,"ca
   return 1;//return 1 value (handle)
 }
 
+static int do_CreateCheckGroup(lua_State *L) //btn=gui.New_CheckGroup(parent,"caption") --parent can be 0
+{
+  void *iParent=lua_touserdata(L,1);
+  const char *caption=luaL_checkstring(L,2);
+  
+  g_print("Adding CheckGroup to Parent 0x%x...\n",int(iParent));
+
+  LuaCheckGroup *Checkgroup=new LuaCheckGroup(L,GTK_WIDGET(iParent),caption);
+  
+  g_print("CheckGroup-Widget: %x\n",int(Checkgroup->GetWidget()));
+  lua_pushlightuserdata(L,Checkgroup); //put pointer of RadioGroup to stack
+  return 1;//return 1 value (handle)
+}
+
 
 //window Methods
 
@@ -195,24 +237,13 @@ static int do_SplitterSetClients(lua_State *L) //gui.Splitter_Set_Clients(Splitt
   return 0;
 }
 
-int get_function_ref(lua_State *L)
-{
-  int ref=0;
-  if (!lua_isfunction(L, -1)) //Judging wheather it is a function object the top element of the stack (last param)
-	{
-		g_print("PopupMenuAddItem: 3rd Parameter is not a function!\n");
-	}else	ref = luaL_ref(L, LUA_REGISTRYINDEX); //fetch the function reference value
-	return ref;
-}
-
 static int do_PopupAddItem(lua_State *L) //gui.Popup_Add_Item(Popup,caption,function)
 {
   //int ArgumentCount = lua_gettop(L);
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
 //  g_print("adding MenuItem %s to Popupmenu %x\n",caption,int(iLuaControl));
-  
-  GtkControl *Control=reinterpret_cast<GtkControl*>(iLuaControl);
+
   LuaPopupMenu *Popup=reinterpret_cast<LuaPopupMenu*>(iLuaControl);
 //  g_print("PopupClass:%x\n",int(Popup));
     
@@ -231,6 +262,16 @@ static int do_RadioGroupAddItem(lua_State *L) //row=gui.Listview_Add_Item(Listvi
 
   LuaRadioGroup *Radiogroup=reinterpret_cast<LuaRadioGroup*>(iLuaControl);
   Radiogroup->AddRadio(caption);
+  return 0;
+}
+
+static int do_CheckGroupAddItem(lua_State *L) //row=gui.Listview_Add_Item(Listview,"caption")
+{
+  void *iLuaControl=lua_touserdata(L,1);
+  const char *caption=luaL_checkstring(L,2);
+
+  LuaCheckGroup *Checkgroup=reinterpret_cast<LuaCheckGroup*>(iLuaControl);
+  Checkgroup->AddCheckBox(caption);
   return 0;
 }
 
@@ -258,6 +299,18 @@ static wchar_t** table_to_str_array(lua_State *L, int idx, int* psz = NULL)
 }
 */
 
+static int do_SetEvent(lua_State *L)
+{
+  void *iLuaControl=lua_touserdata(L,1);
+  //const char *event=luaL_checkstring(L,2);
+  int evType=luaL_checkinteger(L,2);
+      
+  int ref=get_function_ref(L);
+  lua_pop(L, 3); // clean the stack, removing 3 Elements
+  Set_Event(iLuaControl,evType,ref);
+  return 0;
+}
+
 static const luaL_reg R[] =
 {
   { "InitSidebar", do_InitSidebar},
@@ -268,12 +321,16 @@ static const luaL_reg R[] =
 	{ "Splitter_Set_Clients", do_SplitterSetClients },
   { "Popup_Add_Item", do_PopupAddItem },
 	{ "Radiogroup_Add_Item", do_RadioGroupAddItem },
+	{ "Checkgroup_Add_Item", do_CheckGroupAddItem },
 	{ "New_Pagecontrol",	do_CreatePageControl },
 	{ "New_Listview",	do_CreateListView },
 	{ "New_Splitter",	do_CreateSplitter },
   { "New_Button", do_CreateButton },
   { "New_Popup", do_CreatePopup },
   { "New_Radiogroup", do_CreateRadioGroup },
+  { "New_Checkgroup", do_CreateCheckGroup },
+  
+  { "Set_Event", do_SetEvent},
 	{ NULL,			NULL	}
 };
 /*

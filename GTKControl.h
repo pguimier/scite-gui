@@ -9,6 +9,7 @@
 #include "Control.h"
 
 GtkWidget* GetItemFromContainer(GtkContainer *c,int p);
+int GetIndexFromContainer(GtkContainer *c,GtkWidget *item);
 
 class GtkControl:public Control
 {

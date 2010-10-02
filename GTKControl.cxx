@@ -15,6 +15,18 @@ GtkWidget* GetItemFromContainer(GtkContainer *c,int p)
   return res;
 }
 
+int GetIndexFromContainer(GtkContainer *c,GtkWidget *item)
+{
+  GList *List = gtk_container_get_children (c);
+  int i=-1;
+  int l=g_list_length(List);
+  for (int p=0;p<l;p++)
+  {
+    if (GTK_WIDGET(g_list_nth( List, p )->data) == item) i=p;
+  }
+  return i;
+}
+
 void my_getsize(GtkWidget *widget, GtkAllocation *allocation, void *user_data) 
 {
     GtkControl *gc=(GtkControl*)user_data;

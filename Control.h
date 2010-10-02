@@ -9,6 +9,7 @@ enum WindowTypes
 	cButton,
   cCheckBox,
   cRadioGroup,
+  cCheckGroup,
 	cPopupMenu,
   cWindow,
   cBox,
