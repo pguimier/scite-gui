@@ -13,6 +13,21 @@ extern "C" {
 
 extern const char WINDOW_CLASS[] = "WINDOW*";
 
+int MessageDialog(const char *title, const char *message, MessageType type)
+{
+  GtkMessageType t;
+  switch (type)
+  {
+    case MESSAGE_INFO:t=GTK_MESSAGE_INFO;break;
+    case MESSAGE_WARNING:t=GTK_MESSAGE_WARNING;break;
+    case MESSAGE_QUESTION:t=GTK_MESSAGE_QUESTION;break;
+    case MESSAGE_ERROR:t=GTK_MESSAGE_ERROR;break;
+  }
+  return message_dialog(NULL,title,message,t)+9; //yes=-8 no=-9 => yes=1 no=0
+}
+
+
+
 void free_children(GtkContainer *c)
 {
   GList *List = gtk_container_get_children (c);

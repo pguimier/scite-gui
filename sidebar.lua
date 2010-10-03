@@ -102,4 +102,32 @@ function button_clicked()
 end
 gui.Set_Event(btn,0,button_clicked)--button,evClick,function
 
+local btn_err=gui.New_Button(scite.GetSidebarHandle(),"Show Error-Message")
+
+function errorbutton_clicked()
+  gui.Show_Error("Exception","something went wrong :(")
+end
+gui.Set_Event(btn_err,0,errorbutton_clicked)--button,evClick,function
+
+local btn_info=gui.New_Button(scite.GetSidebarHandle(),"Show Info-Message")
+
+function infobutton_clicked()
+  gui.Show_Info("Information","something interesting")
+end
+gui.Set_Event(btn_info,0,infobutton_clicked)--button,evClick,function
+
+local btn_warn=gui.New_Button(scite.GetSidebarHandle(),"Show Warning-Message")
+
+function warnbutton_clicked()
+  gui.Show_Warning("Alert","Beware of the Dog!")
+end
+gui.Set_Event(btn_warn,0,warnbutton_clicked)--button,evClick,function
+
+local btn_question=gui.New_Button(scite.GetSidebarHandle(),"Show Question-Messagebox")
+
+function questionbutton_clicked()
+  print (gui.Show_Question("question","Do you really want to do this?"))
+end
+gui.Set_Event(btn_question,0,questionbutton_clicked)--button,evClick,function
+
 

@@ -14,32 +14,7 @@ extern "C" {
 #include <stdint.h>
 #include <string.h>
 
-void *SidebarHandle;
-
-/*
-bool function_ref(lua_State* L, int idx, int* pr) //get function pointer
-{
-	if (*pr != 0) {
-		luaL_unref(L,LUA_REGISTRYINDEX,*pr);
-	}
-	lua_pushvalue(L,idx);
-	*pr = luaL_ref(L,LUA_REGISTRYINDEX);
-	return true;
-}
-
-void dispatch_ref(lua_State* L,int idx, int ival) //call function
-{
-	if (idx != 0) {
-		lua_rawgeti(L,LUA_REGISTRYINDEX,idx);
-		lua_pushnumber(L,ival);
-		
-		if (lua_pcall(L,1,0,0)) {
-			OutputMessage(L);
-		}
-	}
-}
-
-*/
+void *SidebarHandle=NULL;
 
 #include "LuaControls.h"
 
@@ -55,10 +30,11 @@ int get_function_ref(lua_State *L)
 
 static int do_InitSidebar(lua_State *L) //gui.InitSidebar(scite.GetSidebarHandle())
 {
+  if (SidebarHandle)
+    free_children(GTK_CONTAINER(SidebarHandle));
   SidebarHandle=lua_touserdata(L,1);
 //  g_print("Sidebar-Handle: 0x%x\n",int(SidebarHandle));
   
-  free_children(GTK_CONTAINER(SidebarHandle));
 
   return 1;
 }
@@ -79,6 +55,7 @@ static int Set_Event(void *iControl,int evType,int functionref)
     //cWindow,
     //cBox,
   };
+  return 0;
 }
 
 //creating controls
@@ -282,8 +259,10 @@ static int do_PopupAddItem(lua_State *L) //gui.Popup_Add_Item(Popup,caption,func
 
   LuaPopupMenu *Popup=reinterpret_cast<LuaPopupMenu*>(iLuaControl);
 //  g_print("PopupClass:%x\n",int(Popup));
-    
-  int ref=get_function_ref(L);
+  
+  int ref;
+  if (strcmp(caption,"")) //do not try to get reference for Separator-Elements
+    ref=get_function_ref(L);
   lua_pop(L, 3); // clean the stack, removing 3 Elements
 
   Popup->AddMenuItem(caption,ref);
@@ -291,7 +270,7 @@ static int do_PopupAddItem(lua_State *L) //gui.Popup_Add_Item(Popup,caption,func
   return 0;
 }
 
-static int do_RadioGroupAddItem(lua_State *L) //row=gui.Listview_Add_Item(Listview,"caption")
+static int do_RadioGroupAddItem(lua_State *L) //gui.Radiogroup_Add_Item(Radiogroup,"caption")
 {
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
@@ -301,7 +280,7 @@ static int do_RadioGroupAddItem(lua_State *L) //row=gui.Listview_Add_Item(Listvi
   return 0;
 }
 
-static int do_CheckGroupAddItem(lua_State *L) //row=gui.Listview_Add_Item(Listview,"caption")
+static int do_CheckGroupAddItem(lua_State *L) //gui.Checkgroup_Add_Item(Checkgroup,"caption")
 {
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
@@ -319,6 +298,42 @@ static int do_EditGetText(lua_State *L) //gui.Edit_Get_Text(Edit) returns string
   return 1;
 }
 
+
+static int do_ShowError(lua_State *L) //
+{
+  const char *caption=luaL_checkstring(L,1);
+  const char *message=luaL_checkstring(L,2);
+  int ret=MessageDialog(caption, message, MESSAGE_ERROR);
+  lua_pushinteger(L,ret);
+  return 1;
+}
+
+static int do_ShowInfo(lua_State *L) //
+{
+  const char *caption=luaL_checkstring(L,1);
+  const char *message=luaL_checkstring(L,2);
+  int ret=MessageDialog(caption, message, MESSAGE_INFO);
+  lua_pushinteger(L,ret);
+  return 1;
+}
+
+static int do_ShowWarning(lua_State *L) //
+{
+  const char *caption=luaL_checkstring(L,1);
+  const char *message=luaL_checkstring(L,2);
+  int ret=MessageDialog(caption, message, MESSAGE_WARNING);
+  lua_pushinteger(L,ret);
+  return 1;
+}
+
+static int do_ShowQuestion(lua_State *L) //
+{
+  const char *caption=luaL_checkstring(L,1);
+  const char *message=luaL_checkstring(L,2);
+  int ret=MessageDialog(caption, message, MESSAGE_QUESTION);
+  lua_pushinteger(L,ret);
+  return 1;
+}
 
 /*
 //function taken from gui_ext.cpp by Steve Donovan
@@ -355,6 +370,40 @@ static int do_SetEvent(lua_State *L)
   return 0;
 }
 
+/*
+//TODO: removing redundant code
+
+static int do_SetOnClick//without parameter
+{
+  void *iLuaControl=lua_touserdata(L,1);
+      
+  int ref=get_function_ref(L);
+  lua_pop(L, 2); // clean the stack, removing 2 Elements
+  Set_Event(iLuaControl,evClick,ref);
+  return 0;
+}
+
+static int do_SetOnDoubleClick//parameter: new index
+{
+  void *iLuaControl=lua_touserdata(L,1);
+      
+  int ref=get_function_ref(L);
+  lua_pop(L, 2); // clean the stack, removing 2 Elements
+  Set_Event(iLuaControl,evDoubleClick,ref);
+  return 0;
+}
+
+static int do_SetOnChange//used for Pagecontrol-switch; new index
+{
+  void *iLuaControl=lua_touserdata(L,1);
+      
+  int ref=get_function_ref(L);
+  lua_pop(L, 2); // clean the stack, removing 2 Elements
+  Set_Event(iLuaControl,evChange,ref);
+  return 0;
+}
+*/
+
 static const luaL_reg R[] =
 {
   { "InitSidebar", do_InitSidebar},
@@ -378,7 +427,14 @@ static const luaL_reg R[] =
   { "New_Edit", do_CreateEdit },
   { "New_Memo", do_CreateMemo },
   
-  { "Set_Event", do_SetEvent},
+  { "Show_Error", do_ShowError },
+  { "Show_Info", do_ShowInfo },
+  { "Show_Warning", do_ShowWarning },
+  { "Show_Question", do_ShowQuestion },
+  { "Set_Event", do_SetEvent },
+//	{ "Set_OnClick", do_SetOnClick },//without parameter
+//	{ "Set_OnDoubleClick", do_SetOnDoubleClick },//parameter: new index
+//	{ "Set_OnChange", do_SetOnChange },//used for Pagecontrol-switch; new index
 	{ NULL,			NULL	}
 };
 /*

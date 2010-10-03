@@ -8,6 +8,7 @@
 #include "Buttons.h"
 #include "Menu.h"
 #include "TextControls.h"
+#include "Dialogs.h"
 /*
 enum WindowClasses
 {
@@ -44,6 +45,16 @@ static int wrap_window(lua_State* L, void *win, int WindowClass)
 */
 void free_children(GtkContainer *c);
 //GtkWidget *GetWidgetFromWrapPointer(void *p);
+
+enum MessageType
+{
+  MESSAGE_INFO,
+  MESSAGE_WARNING,
+  MESSAGE_QUESTION,
+  MESSAGE_ERROR
+};
+
+int MessageDialog(const char *title, const char *message, MessageType type);
 
 class LuaPageControl:/*public LuaControl,*/public CPageControl
 {
