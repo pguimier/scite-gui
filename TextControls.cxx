@@ -31,15 +31,20 @@ CEdit::~CEdit()
 
 }
 
+GtkWidget *CEdit::GetEdit()
+{
+  return GetItemFromContainer(GTK_CONTAINER(GetWidget()),1);
+}
+
 void CEdit::SetText(const char* text)
 {
-  GtkWidget *Edit=GetItemFromContainer(GTK_CONTAINER(GetWidget()),1);
+  GtkWidget *Edit=GetEdit();
   gtk_entry_set_text(GTK_ENTRY(Edit), text);
 }
 
 const char* CEdit::GetText()
 {
-  GtkWidget *Edit=GetItemFromContainer(GTK_CONTAINER(GetWidget()),1);
+  GtkWidget *Edit=GetEdit();
   return gtk_entry_get_text(GTK_ENTRY(Edit));
 }
 
@@ -64,3 +69,33 @@ CMemo::~CMemo()
   // if (GTK_IS_WIDGET(GetWidget())) //if control is not freed before (window destroyed)
     // gtk_widget_destroy(GetWidget());
 }
+
+GtkWidget *CMemo::GetMemo()
+{
+  return GetItemFromContainer(GTK_CONTAINER(GetWidget()),0);
+}
+
+void CMemo::SetText(const char *Text)
+{
+  GtkTextBuffer *buffer;
+  buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (GetMemo()));
+  gtk_text_buffer_set_text (buffer, "Hello Text View!", -1);
+}
+
+char *CMemo::GetText()
+{
+  GtkTextIter start;
+  GtkTextIter end;
+  GtkTextBuffer *buffer;
+
+  //gchar *text;
+  buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (GetMemo()));
+
+  /* Obtain iters for the start and end of points of the buffer */
+  gtk_text_buffer_get_start_iter (buffer, &start);
+  gtk_text_buffer_get_end_iter (buffer, &end);
+
+  /* Get the entire buffer text. */
+  return gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+}
+

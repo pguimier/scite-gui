@@ -270,8 +270,6 @@ void LuaEdit::GetText()
   lua_pushstring(Lua.GetLuaState(),CEdit::GetText());
 }
 
-
-
 LuaMemo::LuaMemo(lua_State *l,GtkWidget *parent)
   : CMemo(parent),Lua(l)
 {
@@ -280,6 +278,10 @@ LuaMemo::LuaMemo(lua_State *l,GtkWidget *parent)
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
 }
 
+void LuaMemo::GetText()
+{
+  lua_pushstring(Lua.GetLuaState(),CMemo::GetText());
+}
 
 
 

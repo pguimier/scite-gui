@@ -325,6 +325,14 @@ static int do_EditGetText(lua_State *L) //gui.Edit_Get_Text(Edit) returns string
   return 1;
 }
 
+static int do_MemoGetText(lua_State *L) //gui.Memo_Get_Text(Memo) returns string
+{
+  void *iLuaControl=lua_touserdata(L,1);
+  LuaMemo *Memo=reinterpret_cast<LuaMemo*>(iLuaControl);
+  Memo->GetText(); //LuaMemo pushes value to Stack
+  return 1;
+}
+
 
 static int do_ShowError(lua_State *L) //
 {
@@ -447,6 +455,7 @@ static const luaL_reg R[] =
 	{ "Checkgroup_Add_Item", do_CheckGroupAddItem },
 	{ "Checkgroup_Is_Checked", do_CheckGroupIsChecked },
 	{ "Edit_Get_Text", do_EditGetText },
+	{ "Memo_Get_Text", do_MemoGetText },
 	{ "New_Pagecontrol",	do_CreatePageControl },
 	{ "New_Listview",	do_CreateListView },
 	{ "New_Splitter",	do_CreateSplitter },

@@ -113,6 +113,7 @@ local btn_info=gui.New_Button(scite.GetSidebarHandle(),"Show Info-Message")
 
 function infobutton_clicked()
   gui.Show_Info("Information","something interesting...\nradiogroup's selected item is #"..gui.Radiogroup_Get_Checked(rg))
+  print(gui.Memo_Get_Text(memo))
 end
 gui.Set_Event(btn_info,0,infobutton_clicked)--button,evClick,function
 

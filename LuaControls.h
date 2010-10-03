@@ -173,6 +173,7 @@ class LuaMemo:/*public LuaControl,*/public CMemo
     LuaControl Lua;
     LuaMemo(lua_State *l,GtkWidget *parent);
     virtual ~LuaMemo() {};
+    void GetText();
     //virtual void OnChange(GtkWidget *changed_item);
 };
 
