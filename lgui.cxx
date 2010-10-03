@@ -235,6 +235,15 @@ static int do_ListViewGetText(lua_State *L) //gui.Listview_Get_Text(listview,row
   return 1;
 }
 
+static int do_ListViewClear(lua_State *L) //gui.Listview_Clear(Listview)
+{
+  void *iLuaControl=lua_touserdata(L,1);
+  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
+  g_print("clear listview\n");
+  Listview->Clear();
+  return 0;
+}
+
 static int do_SplitterSetClients(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Child1,Child2)
 {
   void *iLuaControl=lua_touserdata(L,1);
@@ -330,8 +339,8 @@ static int do_ShowQuestion(lua_State *L) //
 {
   const char *caption=luaL_checkstring(L,1);
   const char *message=luaL_checkstring(L,2);
-  int ret=MessageDialog(caption, message, MESSAGE_QUESTION);
-  lua_pushinteger(L,ret);
+  bool ret=(MessageDialog(caption, message, MESSAGE_QUESTION)==1);
+  lua_pushboolean(L,ret);
   return 1;
 }
 
@@ -412,6 +421,7 @@ static const luaL_reg R[] =
 	{ "Listview_Add_Item", do_ListViewAddItem },
 	{ "Listview_Set_Item", do_ListViewSetItem },
 	{ "Listview_Get_Text", do_ListViewGetText },
+	{ "Listview_Clear", do_ListViewClear },
 	{ "Splitter_Set_Clients", do_SplitterSetClients },
   { "Popup_Add_Item", do_PopupAddItem },
 	{ "Radiogroup_Add_Item", do_RadioGroupAddItem },

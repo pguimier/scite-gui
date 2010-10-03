@@ -267,14 +267,7 @@ LuaEdit::LuaEdit(lua_State *l,GtkWidget *parent,const char *label)
 
 void LuaEdit::GetText()
 {
-  //g_print("LuaListView::GetValue\n");
-  //char *caption;
-  //CEdit::GetValue(&caption);
-  //g_print("caption: %s\n",caption);
   lua_pushstring(Lua.GetLuaState(),CEdit::GetText());
-  //g_print("free string now\n");
-  //g_free(caption);
-  //g_print("LuaListView::GetValue - End\n");
 }
 
 

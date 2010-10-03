@@ -126,7 +126,9 @@ gui.Set_Event(btn_warn,0,warnbutton_clicked)--button,evClick,function
 local btn_question=gui.New_Button(scite.GetSidebarHandle(),"Show Question-Messagebox")
 
 function questionbutton_clicked()
-  print (gui.Show_Question("question","Do you really want to do this?"))
+  if gui.Show_Question("question","Do you really want to do this?") then
+    gui.Listview_Clear(lv)
+  end
 end
 gui.Set_Event(btn_question,0,questionbutton_clicked)--button,evClick,function
 
