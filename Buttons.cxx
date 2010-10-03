@@ -110,7 +110,6 @@ int CRadioGroup::GetChecked()
 {
   //return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(GetWidget()));
   GList *List = gtk_container_get_children (GTK_CONTAINER(GetWidget()));
-
   int l=g_list_length(List);
   GtkWidget *w;
   for (int i=0; i<l;i++)
@@ -183,9 +182,9 @@ bool CCheckGroup::GetChecked(int index)
   {
     GtkWidget *w;
     w = GTK_WIDGET(g_list_nth( List, index )->data);
-    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(w))) return index;
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(w))) return true;
   }
-  return -1;
+  return false;
 }
 
 void CCheckGroup::SetChecked(int index,bool checked)

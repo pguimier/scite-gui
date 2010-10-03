@@ -289,6 +289,14 @@ static int do_RadioGroupAddItem(lua_State *L) //gui.Radiogroup_Add_Item(Radiogro
   return 0;
 }
 
+static int do_RadioGroupGetChecked(lua_State *L) //gui.Radiogroup_Get_Checked(Radiogroup) returns integer
+{
+  void *iLuaControl=lua_touserdata(L,1);
+  LuaRadioGroup *Radiogroup=reinterpret_cast<LuaRadioGroup*>(iLuaControl);
+  lua_pushinteger(L,Radiogroup->GetChecked());
+  return 1;
+}
+
 static int do_CheckGroupAddItem(lua_State *L) //gui.Checkgroup_Add_Item(Checkgroup,"caption")
 {
   void *iLuaControl=lua_touserdata(L,1);
@@ -297,6 +305,16 @@ static int do_CheckGroupAddItem(lua_State *L) //gui.Checkgroup_Add_Item(Checkgro
   LuaCheckGroup *Checkgroup=reinterpret_cast<LuaCheckGroup*>(iLuaControl);
   Checkgroup->AddCheckBox(caption);
   return 0;
+}
+
+static int do_CheckGroupIsChecked(lua_State *L) //gui.Checkgroup_Is_Checked(Checkgroup,int ItemIndex) returns bool
+{
+  void *iLuaControl=lua_touserdata(L,1);
+  int index=luaL_checkinteger(L,2);
+
+  LuaCheckGroup *Checkgroup=reinterpret_cast<LuaCheckGroup*>(iLuaControl);
+  lua_pushboolean(L,Checkgroup->GetChecked(index));
+  return 1;
 }
 
 static int do_EditGetText(lua_State *L) //gui.Edit_Get_Text(Edit) returns string
@@ -425,7 +443,9 @@ static const luaL_reg R[] =
 	{ "Splitter_Set_Clients", do_SplitterSetClients },
   { "Popup_Add_Item", do_PopupAddItem },
 	{ "Radiogroup_Add_Item", do_RadioGroupAddItem },
+	{ "Radiogroup_Get_Checked", do_RadioGroupGetChecked },
 	{ "Checkgroup_Add_Item", do_CheckGroupAddItem },
+	{ "Checkgroup_Is_Checked", do_CheckGroupIsChecked },
 	{ "Edit_Get_Text", do_EditGetText },
 	{ "New_Pagecontrol",	do_CreatePageControl },
 	{ "New_Listview",	do_CreateListView },

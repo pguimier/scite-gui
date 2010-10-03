@@ -72,22 +72,22 @@ gui.Splitter_Set_Clients(spl,lv,pagecontrol2)
 --gui.Splitter_Set_Clients(spl2,btn,pagecontrol2);
 
 --RadioGroup
-local radio=gui.New_Radiogroup(pc2tab1,"1st choice")
-gui.Radiogroup_Add_Item(radio,"2nd choice")
+local rg=gui.New_Radiogroup(pc2tab1,"1st choice")
+gui.Radiogroup_Add_Item(rg,"2nd choice")
 function rg_change(selected)
   print("RadioGroup changed to Item #"..selected)
 end
-gui.Set_Event(radio,2,rg_change)--radiogroup,evChange,function
+gui.Set_Event(rg,2,rg_change)--radiogroup,evChange,function
 
 --CheckGroup
-local check=gui.New_Checkgroup(pc2tab2,"1st option")
-gui.Checkgroup_Add_Item(check,"2nd option")
-gui.Checkgroup_Add_Item(check,"3rd option")
+local cg=gui.New_Checkgroup(pc2tab2,"1st option")
+gui.Checkgroup_Add_Item(cg,"2nd option")
+gui.Checkgroup_Add_Item(cg,"3rd option")
 
 function cg_change(selected)
   print("Item #"..selected.." in CheckGroup changed")
 end
-gui.Set_Event(check,2,cg_change)--checkgroup,evChange,function
+gui.Set_Event(cg,2,cg_change)--checkgroup,evChange,function
 
 --edit
 local edit=gui.New_Edit(pc2tab3,"Text: ")
@@ -112,21 +112,25 @@ gui.Set_Event(btn_err,0,errorbutton_clicked)--button,evClick,function
 local btn_info=gui.New_Button(scite.GetSidebarHandle(),"Show Info-Message")
 
 function infobutton_clicked()
-  gui.Show_Info("Information","something interesting")
+  gui.Show_Info("Information","something interesting...\nradiogroup's selected item is #"..gui.Radiogroup_Get_Checked(rg))
 end
 gui.Set_Event(btn_info,0,infobutton_clicked)--button,evClick,function
 
 local btn_warn=gui.New_Button(scite.GetSidebarHandle(),"Show Warning-Message")
 
 function warnbutton_clicked()
-  gui.Show_Warning("Alert","Beware of the Dog!")
+  if gui.Checkgroup_Is_Checked(cg,0) then
+    gui.Show_Warning("Alert","Beware, first Item in Checkgroup is selected! :D\n")
+  else
+    gui.Show_Warning("Alert","Beware, first Item in Checkgroup is NOT selected! :D\n")
+  end
 end
 gui.Set_Event(btn_warn,0,warnbutton_clicked)--button,evClick,function
 
 local btn_question=gui.New_Button(scite.GetSidebarHandle(),"Show Question-Messagebox")
 
 function questionbutton_clicked()
-  if gui.Show_Question("question","Do you really want to do this?") then
+  if gui.Show_Question("question","Do you really want to do this (clear Listview)?") then
     gui.Listview_Clear(lv)
   end
 end
