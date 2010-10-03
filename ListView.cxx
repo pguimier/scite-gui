@@ -89,6 +89,17 @@ bool CListView::SetValue(int row,int col,const char *value)
   return false;
 }
 
+void CListView::GetText(int row,int col,char **caption)
+{
+  GtkTreeIter   iter;
+
+  if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(store), &iter, NULL, row))
+  {
+    gtk_tree_model_get(GTK_TREE_MODEL(store), &iter, col, caption, -1);
+  }
+  //g_print("caption (CListView): %s\n",*caption);
+}
+
 GtkTreeIter CListView::AddItem(const char *caption)
 {
   //g_print("Add Item (%s)\n",caption);

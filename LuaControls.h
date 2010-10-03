@@ -70,6 +70,7 @@ class LuaListView:/*public LuaControl,*/public CListView
     virtual ~LuaListView() {};
     virtual void OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col);
     virtual int AddNewItem(const char *caption);
+    void GetText(int row,int col);
 };
 
 class LuaSplitter:/*public LuaControl,*/public CSplitter
@@ -147,6 +148,7 @@ class LuaEdit:/*public LuaControl,*/public CEdit
     LuaControl Lua;
     LuaEdit(lua_State *l,GtkWidget *parent,const char *label);
     virtual ~LuaEdit() {};
+    void GetText();
     //virtual void OnChange(GtkWidget *changed_item);
 };
 

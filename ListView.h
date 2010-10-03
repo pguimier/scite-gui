@@ -16,6 +16,7 @@ class CListView:public GtkControl
     CListView(GtkWidget *parent/*,int cols=1*/);
     virtual ~CListView();
     bool SetValue(int row,int col,const char *value);
+    void GetText(int row,int col,char** caption);
     virtual GtkTreeIter AddItem(const char *caption);
     int GetRowFromIter(GtkTreeIter &iter);
     int AddColumn(const char *caption);

@@ -28,6 +28,7 @@ gui.Listview_Set_Item(lv,row,1,"i2c2")
 
 function lv_doubleclick(row)
   print("Listview doubleclicked on row #"..row)
+  print(gui.Listview_Get_Text(lv,row,0))
 end
 gui.Set_Event(lv,1,lv_doubleclick)--listview,evDoubleClick,function
 
@@ -50,14 +51,6 @@ gui.Popup_Add_Item(pu,"test1",menu_test1)
 gui.Popup_Add_Item(pu,"test2",menu_test2)
 gui.Popup_Add_Item(pu,"",0)
 gui.Popup_Add_Item(pu,"test3",menu_test3)
-
---Button
-local btn=gui.New_Button(scite.GetSidebarHandle(),"Test")
-
-function button_clicked()
-  print("button clicked")
-end
-gui.Set_Event(btn,0,button_clicked)--button,evClick,function
 
 --Splitter
 local spl=gui.New_Splitter(pc1tab1,true)
@@ -99,4 +92,14 @@ gui.Set_Event(check,2,cg_change)--checkgroup,evChange,function
 --edit
 local edit=gui.New_Edit(pc2tab3,"Text: ")
 local memo=gui.New_Memo(pc2tab3)
+
+--Button
+local btn=gui.New_Button(scite.GetSidebarHandle(),"Test")
+
+function button_clicked()
+  print("button clicked")
+  print("Edit-Text: "..gui.Edit_Get_Text(edit))
+end
+gui.Set_Event(btn,0,button_clicked)--button,evClick,function
+
 

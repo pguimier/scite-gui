@@ -248,6 +248,16 @@ static int do_ListViewSetItem(lua_State *L) //gui.Listview_Set_Item(listview,row
   return 0;
 }
 
+static int do_ListViewGetText(lua_State *L) //gui.Listview_Get_Text(listview,row,col) returns string
+{
+  void *iLuaControl=lua_touserdata(L,1);
+  int row=luaL_checkinteger(L,2);
+  int col=luaL_checkinteger(L,3);
+  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
+  Listview->GetText(row,col); //LuaListView pushes value to Stack
+  return 1;
+}
+
 static int do_SplitterSetClients(lua_State *L) //gui.Splitter_Set_Clients(Splitter,Child1,Child2)
 {
   void *iLuaControl=lua_touserdata(L,1);
@@ -301,6 +311,14 @@ static int do_CheckGroupAddItem(lua_State *L) //row=gui.Listview_Add_Item(Listvi
   return 0;
 }
 
+static int do_EditGetText(lua_State *L) //gui.Edit_Get_Text(Edit) returns string
+{
+  void *iLuaControl=lua_touserdata(L,1);
+  LuaEdit *Edit=reinterpret_cast<LuaEdit*>(iLuaControl);
+  Edit->GetText(); //LuaEdit pushes value to Stack
+  return 1;
+}
+
 
 /*
 //function taken from gui_ext.cpp by Steve Donovan
@@ -344,10 +362,12 @@ static const luaL_reg R[] =
 	{ "Listview_Add_Column", do_ListViewAddColumn },
 	{ "Listview_Add_Item", do_ListViewAddItem },
 	{ "Listview_Set_Item", do_ListViewSetItem },
+	{ "Listview_Get_Text", do_ListViewGetText },
 	{ "Splitter_Set_Clients", do_SplitterSetClients },
   { "Popup_Add_Item", do_PopupAddItem },
 	{ "Radiogroup_Add_Item", do_RadioGroupAddItem },
 	{ "Checkgroup_Add_Item", do_CheckGroupAddItem },
+	{ "Edit_Get_Text", do_EditGetText },
 	{ "New_Pagecontrol",	do_CreatePageControl },
 	{ "New_Listview",	do_CreateListView },
 	{ "New_Splitter",	do_CreateSplitter },

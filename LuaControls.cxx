@@ -132,6 +132,19 @@ int LuaListView::AddNewItem(const char *caption)
   GtkTreeIter iter=AddItem(caption);
   return GetRowFromIter(iter);
 }
+
+void LuaListView::GetText(int row,int col)
+{
+  //g_print("LuaListView::GetValue\n");
+  char *caption;
+  CListView::GetText(row,col,&caption);
+  //g_print("caption: %s\n",caption);
+  lua_pushstring(Lua.GetLuaState(),caption);
+  //g_print("free string now\n");
+  g_free(caption);
+  //g_print("LuaListView::GetValue - End\n");
+}
+
 void LuaListView::OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col)
 {
   int *indices = gtk_tree_path_get_indices (path);
@@ -236,6 +249,20 @@ LuaEdit::LuaEdit(lua_State *l,GtkWidget *parent,const char *label)
   SetType(cEdit);
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
 }
+
+void LuaEdit::GetText()
+{
+  //g_print("LuaListView::GetValue\n");
+  //char *caption;
+  //CEdit::GetValue(&caption);
+  //g_print("caption: %s\n",caption);
+  lua_pushstring(Lua.GetLuaState(),CEdit::GetText());
+  //g_print("free string now\n");
+  //g_free(caption);
+  //g_print("LuaListView::GetValue - End\n");
+}
+
+
 
 LuaMemo::LuaMemo(lua_State *l,GtkWidget *parent)
   : CMemo(parent),Lua(l)
