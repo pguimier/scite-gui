@@ -14,5 +14,6 @@ class CPopupMenu:public GtkControl
     virtual ~CPopupMenu();
     //void SetCaption(const char*caption);
     void AddMenuItem(const char*caption,int ID);
+    CPopupMenu AddSubmenu();
     virtual void OnClick(GtkWidget *Menuitem,int ID);
 };

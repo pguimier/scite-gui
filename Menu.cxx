@@ -55,6 +55,16 @@ void CPopupMenu::AddMenuItem(const char*caption,int ID)
   gtk_widget_show (menuitem);
 }
 
+CPopupMenu CPopupMenu::AddSubmenu()
+{
+  /*
+  menuitem_file_recent=gtk_menu_item_new_with_label("Recent files");
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu_file),menuitem_file_recent);
+  gtk_widget_show (menuitem_file_recent);
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem_file_recent),menu_file_recent);
+  */
+}
+
 void CPopupMenu::OnClick(GtkWidget *Menuitem,int ID)
 {
   g_print("Menuitem (%x) clicked\n",ID);
