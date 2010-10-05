@@ -4,7 +4,8 @@ LD       = g++           # use GNU C++ as linker
 LD-FLAGS = -shared -o   # flags for linker (-o must be last)
 RM           = rm -f         # how to remove files
 MAKE         = make          # name of make utility 
-OBJS         = lgui.o Control.o LuaControl.o GTKControl.o LuaControls.o PageControl.o ListView.o Buttons.o Splitter.o Menu.o Dialogs.o TextControls.o Container.o
+OBJS         = lgui.o Control.o LuaControl.o LuaEvents.o LuaObjects.o \
+               GTKControl.o LuaControls.o PageControl.o ListView.o Buttons.o Splitter.o Menu.o Dialogs.o TextControls.o Container.o
 TARGET       = gui.so        # name of executable
 LUA_PATH     = ./lua
 LUA_INCS     = -I$(LUA_PATH)/include -I$(LUA_PATH)/src
