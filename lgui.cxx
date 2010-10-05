@@ -629,7 +629,7 @@ extern "C"
     RegisterClass(L,"Button","gui.Button",Button_f,Button_m);
     RegisterClass(L,"RadioGroup","gui.RadioGroup",RadioGroup_f,RadioGroup_m);
     RegisterClass(L,"CheckGroup","gui.CheckGroup",CheckGroup_f,CheckGroup_m);
-    RegisterClass(L,"Edit","gui.Popup",Edit_f,Edit_m);
+    RegisterClass(L,"Edit","gui.Edit",Edit_f,Edit_m);
     RegisterClass(L,"Memo","gui.Memo",Memo_f,Memo_m);
 
 	  return 2;
