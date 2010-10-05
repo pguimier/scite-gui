@@ -1,14 +1,20 @@
-Scite-Patch:
-============
-copy folder "Scite_Patch" to a location you want (with exec- and write-rights) and run get.sh
-this will create a subfolder "scite_src", download scite-ru-repository, replace 3 files and compile it
+Scite-Patch (for compiling yourself):
+=====================================
+note: precompiled versions of scite 2.21 and Scite-RU 2.03.75 are in this package
+copy folder "Scite_Patch" to a location you want (with exec- and write-rights) and run get.sh from your preferred scite-version (Scite 2.21 or Scite-RU)
+this will create a subfolder "scite_src", download scite-repository, replace 3 files and compile it
 
 Compile GUI-Extension:
 ======================
-simply run "make" in root-folder of this source-Package
+not needed if you havn't made changes (gui.so exists)
+simply run compile_mak.sh
 
-Konfiguration:
-==============
+running scite with gui-ext
+==========================
+simply run start_scite.sh
+
+Konfiguration out of this package:
+==================================
 
 ~/.SciTEUser.properties:
 
@@ -26,4 +32,4 @@ gui.so to ~/gui.so
 now you can run scite from the subfolder scite_src/src/scite/bin and see the sidebar
 
 
-i hope i have forgotten nothing, lese tell it me ;)
+i hope i have forgotten nothing, else tell it me ;)
