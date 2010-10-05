@@ -11,7 +11,7 @@
 GtkWidget* GetItemFromContainer(GtkContainer *c,int p);
 int GetIndexFromContainer(GtkContainer *c,GtkWidget *item);
 
-class GtkControl:public CControl
+class GtkControl:public Control
 {
   private:
     GtkWidget *widget;

@@ -4,36 +4,37 @@ require "gui"
 gui.InitSidebar(scite.GetSidebarHandle())
 
 --PageControl
-local pc=PageControl.new(scite.GetSidebarHandle())
-local pc1tab1=pc:Add_Page("1st Page")
-local pc1tab2=pc:Add_Page("2nd Page")
-local pc1tab3=pc:Add_Page("3rd Page")
+local pagecontrol=gui.New_Pagecontrol(scite.GetSidebarHandle())
 
 function tab_change(selected)
   print("PageControl changed to Tab #"..selected)
 end
-pc:on_Change(tab_change)
+
+local pc1tab1=gui.Pagecontrol_Add_Page(pagecontrol,"1st Page")
+local pc1tab2=gui.Pagecontrol_Add_Page(pagecontrol,"2nd Page")
+--local pc1tab3=gui.Pagecontrol_Add_Page(pagecontrol,"3rd Page")
+
+gui.Set_Event(pagecontrol,2,tab_change)--radiogroup,evChange,function
 
 --Listview
-local lv=ListView.new(0)
-lv:Add_Column("Col 1")
-lv:Add_Column("Col 2")
+local lv=gui.New_Listview(0)
+gui.Listview_Add_Column(lv,"Col 1")
+gui.Listview_Add_Column(lv,"Col 2")
 local row
-row=lv:Add_Item("Item1")
-lv:Set_Item(row,1,"i1c2")
-row=lv:Add_Item("Item2")
-lv:Set_Item(row,1,"i2c2")
+row=gui.Listview_Add_Item(lv,"Item1")
+gui.Listview_Set_Item(lv,row,1,"i1c2")
+row=gui.Listview_Add_Item(lv,"Item2")
+gui.Listview_Set_Item(lv,row,1,"i2c2")
 
-function lv_dblclick(selected)
-  print("Listview Doubleclick on Item #"..selected)
+function lv_doubleclick(row)
+  print("Listview doubleclicked on row #"..row)
+  print(gui.Listview_Get_Text(lv,row,0))
 end
-lv:on_DblClick(lv_dblclick)
+gui.Set_Event(lv,1,lv_doubleclick)--listview,evDoubleClick,function
 
---lv:Get_Text
---lv:Clear
+--PopupMenu
+pu=gui.New_Popup(lv)
 
---Popup
-local p=Popup.new(lv)
 function menu_test1()
   print("Menuitem1 :)")
 end
@@ -46,42 +47,94 @@ function menu_test3()
   print("Menuitem3 :)")
 end
 
-p:Add_Item("test1",menu_test1)
-p:Add_Item("test2",menu_test2)
-p:Add_Item("",0)
-p:Add_Item("test3",menu_test3)
-
---Button
-local btn=Button.new(0,"Test-Button")
-function btn_click()
-  print("Button clicked!")
-end
-btn:on_Click(btn_click)
+gui.Popup_Add_Item(pu,"test1",menu_test1)
+gui.Popup_Add_Item(pu,"test2",menu_test2)
+gui.Popup_Add_Item(pu,"",0)
+gui.Popup_Add_Item(pu,"test3",menu_test3)
 
 --Splitter
-local spl=Splitter.new(pc1tab1,true)
-spl:Set_Clients(lv,btn)
+local spl=gui.New_Splitter(pc1tab1,true)
+
+
+--another PageControl
+local pagecontrol2=gui.New_Pagecontrol(0)
+local pc2tab1=gui.Pagecontrol_Add_Page(pagecontrol2,"pc2t1")
+local pc2tab2=gui.Pagecontrol_Add_Page(pagecontrol2,"pc2t2")
+local pc2tab3=gui.Pagecontrol_Add_Page(pagecontrol2,"pc2t3")
+
+function tab_change2(selected)
+  print("PageControl#2 changed to Tab #"..selected)
+end
+gui.Set_Event(pagecontrol2,2,tab_change2)--radiogroup,evChange,function
+
+gui.Splitter_Set_Clients(spl,lv,pagecontrol2)
+
+--gui.Splitter_Set_Clients(spl2,btn,pagecontrol2);
 
 --RadioGroup
-local rg=RadioGroup.new(pc1tab1,"1st choice")
-rg:Add_Item("2nd choice")
-rg:Add_Item("3rd choice")
+local rg=gui.New_Radiogroup(pc2tab1,"1st choice")
+gui.Radiogroup_Add_Item(rg,"2nd choice")
 function rg_change(selected)
-  print("Radiogroup changed to Item #"..selected)
+  print("RadioGroup changed to Item #"..selected)
 end
-rg:on_Change(rg_change)
+gui.Set_Event(rg,2,rg_change)--radiogroup,evChange,function
 
---checkgroup
-local cg=CheckGroup.new(pc1tab1,"1st option")
-cg:Add_Item("2nd option")
-cg:Add_Item("3rd option")
+--CheckGroup
+local cg=gui.New_Checkgroup(pc2tab2,"1st option")
+gui.Checkgroup_Add_Item(cg,"2nd option")
+gui.Checkgroup_Add_Item(cg,"3rd option")
+
 function cg_change(selected)
-  print("Checkgroup-Item #"..selected.." changed!")
+  print("Item #"..selected.." in CheckGroup changed")
 end
-cg:on_Change(cg_change)
+gui.Set_Event(cg,2,cg_change)--checkgroup,evChange,function
+
+--edit
+local edit=gui.New_Edit(pc2tab3,"Text: ")
+local memo=gui.New_Memo(pc2tab3)
+
+--Button
+local btn=gui.New_Button(scite.GetSidebarHandle(),"Test")
+
+function button_clicked()
+  print("button clicked")
+  print("Edit-Text: "..gui.Edit_Get_Text(edit))
+end
+gui.Set_Event(btn,0,button_clicked)--button,evClick,function
+
+local btn_err=gui.New_Button(scite.GetSidebarHandle(),"Show Error-Message")
+
+function errorbutton_clicked()
+  gui.Show_Error("Exception","something went wrong :(")
+end
+gui.Set_Event(btn_err,0,errorbutton_clicked)--button,evClick,function
+
+local btn_info=gui.New_Button(scite.GetSidebarHandle(),"Show Info-Message")
+
+function infobutton_clicked()
+  gui.Show_Info("Information","something interesting...\nradiogroup's selected item is #"..gui.Radiogroup_Get_Checked(rg))
+  print(gui.Memo_Get_Text(memo))
+end
+gui.Set_Event(btn_info,0,infobutton_clicked)--button,evClick,function
+
+local btn_warn=gui.New_Button(scite.GetSidebarHandle(),"Show Warning-Message")
+
+function warnbutton_clicked()
+  if gui.Checkgroup_Is_Checked(cg,0) then
+    gui.Show_Warning("Alert","Beware, first Item in Checkgroup is selected! :D\n")
+  else
+    gui.Show_Warning("Alert","Beware, first Item in Checkgroup is NOT selected! :D\n")
+  end
+end
+gui.Set_Event(btn_warn,0,warnbutton_clicked)--button,evClick,function
+
+local btn_question=gui.New_Button(scite.GetSidebarHandle(),"Show Question-Messagebox")
+
+function questionbutton_clicked()
+  if gui.Show_Question("question","Do you really want to do this (clear Listview)?") then
+    gui.Listview_Clear(lv)
+  end
+end
+gui.Set_Event(btn_question,0,questionbutton_clicked)--button,evClick,function
 
 
-local edit=Edit.new(pc1tab1,"Text: ")
---edit:Get_Text
-local memo=Memo.new(pc1tab1)
---memo:Get_Text
