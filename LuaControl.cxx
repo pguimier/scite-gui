@@ -11,6 +11,7 @@ extern "C" {
 #include <string.h>
 
 #include "LuaControl.h"
+#include "Control.h"
 
 //http://efreedom.com/Question/1-1416797/Reference-Lua-Function-C-CPlusPlus
 //http://efreedom.com/Question/1-2688040/Callback-Lua-Function-C-Function
@@ -63,38 +64,6 @@ void dispatch_ref(lua_State* L,int idx, int ival) //call function ival=param for
 	}
 }
 
-/*
-class LuaControl
-{
-protected:
-	lua_State* L;
-	int events[evMax];//array for holding lua-function-pointer
-public:
-	LuaControl(lua_State *l): L(l) 
-	{
-	  for (int i=0;i<evMax;i++) {events[i]=0;}
-	}
-	~LuaControl()
-	{
-	  for (int i=0;i<evMax;i++) {removeEvent(i);}//free memory of all events
-	}
-	void removeEvent(int EventID)
-	{
-	  if (events[EventID]!=0) 
-	  {
-	    luaL_unref(L,LUA_REGISTRYINDEX,events[EventID]);
-	    events[EventID]=0;
-	  }
-	}
-	void setEvent(int EventID,int idx)
-	{
-	  //call function_ref to get pointer and set it to new adress
-	  removeEvent(EventID);
-		lua_pushvalue(L,idx);
-		events[EventID]= luaL_ref(L,LUA_REGISTRYINDEX);
-	}
-};
-*/
 LuaControl::LuaControl(lua_State *l): L(l)
 {
   for (int i=0;i<evMax;i++) {events[i]=0;}
@@ -116,10 +85,8 @@ void LuaControl::removeEvent(int EventID)
 
 void LuaControl::SetEvent(int EventID,int ref)
 {
-  //call function_ref to get pointer and set it to new adress
   removeEvent(EventID);
-	//lua_pushvalue(L,idx);
-	events[EventID]=ref; //luaL_ref(L,LUA_REGISTRYINDEX);
+	events[EventID]=ref;
 }
 
 int LuaControl::GetEvent(int EventID)

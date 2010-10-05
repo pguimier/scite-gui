@@ -22,14 +22,14 @@ enum WindowTypes
 	cMax
 };
 
-class Control
+class CControl
 {
   private:
     int fType;
   protected:
   public:
-    Control();
-    virtual ~Control();
+    CControl();
+    virtual ~CControl();
     void SetType(int T);
     int GetType();
 };

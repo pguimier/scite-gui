@@ -16,7 +16,35 @@ extern "C" {
 
 void *SidebarHandle=NULL;
 
+#include "LuaControl.h"
 #include "LuaControls.h"
+
+struct LuaClass
+{
+  CControl *Ctl;
+  int CT;
+};
+
+static int PushObject(lua_State* L,CControl *c)
+{
+	LuaClass *lc = (LuaClass*)lua_newuserdata(L,sizeof(LuaClass));
+	lc->Ctl = c;
+	lc->CT = c->GetType();
+	switch (lc->CT)
+	{
+	  case cPageControl:luaL_getmetatable(L,"gui.PageControl");break;
+	  case cListView:luaL_getmetatable(L,"gui.ListView");break;
+	  case cSplitter:luaL_getmetatable(L,"gui.Splitter");break;
+	  case cPopupMenu:luaL_getmetatable(L,"gui.Popup");break;
+	  case cButton:luaL_getmetatable(L,"gui.Button");break;
+	  case cRadioGroup:luaL_getmetatable(L,"gui.RadioGroup");break;
+	  case cCheckGroup:luaL_getmetatable(L,"gui.CheckGroup");break;
+	  case cEdit:luaL_getmetatable(L,"gui.Edit");break;
+	  case cMemo:luaL_getmetatable(L,"gui.Memo");break;
+	}
+	lua_setmetatable(L,-2);
+	return 1;
+}
 
 int get_function_ref(lua_State *L)
 {
@@ -41,7 +69,10 @@ static int do_InitSidebar(lua_State *L) //gui.InitSidebar(scite.GetSidebarHandle
 
 static int Set_Event(void *iControl,int evType,int functionref)
 {
-  GtkControl *Control=reinterpret_cast<GtkControl*>(iControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iControl);
+  //LuaListView *Listview=reinterpret_cast<LuaListView*>(lc->Ctl);
+  CControl *Control=reinterpret_cast<GtkControl*>(lc->Ctl);
+  //CControl *Control=reinterpret_cast<GtkControl*>(iControl);
   switch (Control->GetType())
   {
     case cPageControl: {LuaPageControl *c=dynamic_cast<LuaPageControl*>(Control);c->Lua.SetEvent(evType,functionref);} break;
@@ -66,8 +97,9 @@ static int do_CreatePageControl(lua_State *L) //pagecontrol=gui.New_Pagecontrol(
 //  g_print("Adding Pagecontrol to Parent 0x%x...\n",int(iParent));
 
   LuaPageControl *PageControl=new LuaPageControl(L,GTK_WIDGET(iParent));
-  lua_pushlightuserdata(L,PageControl);//put pointer of Pagecontrol to stack
-  return 1;//return 1 value (handle)
+  //lua_pushlightuserdata(L,PageControl);//put pointer of Pagecontrol to stack
+  //return 1;//return 1 value (handle)
+  return PushObject(L,PageControl);
 }
 
 static int do_CreateListView(lua_State *L) //lv=gui.New_Listview(parent) --parent can be 0
@@ -78,8 +110,9 @@ static int do_CreateListView(lua_State *L) //lv=gui.New_Listview(parent) --paren
 
   LuaListView *Listview=new LuaListView(L,GTK_WIDGET(iParent));
 //  g_print("Listview-Widget: %x\n",int(Listview->GetWidget()));
-  lua_pushlightuserdata(L,Listview);//put pointer of Listview to stack
-  return 1;//return 1 value (handle)
+  //lua_pushlightuserdata(L,Listview);//put pointer of Listview to stack
+  return PushObject(L,Listview);
+  //return 1;//return 1 value (handle)
 }
 
 static int do_CreateSplitter(lua_State *L) //spl=gui.New_Splitter(parent,bool vertical) --parent can be 0
@@ -90,8 +123,9 @@ static int do_CreateSplitter(lua_State *L) //spl=gui.New_Splitter(parent,bool ve
 //  g_print("Adding Pagecontrol to Parent 0x%x...\n",int(iParent));
 
   LuaSplitter *Splitter=new LuaSplitter(L,GTK_WIDGET(iParent),vertical);
-  lua_pushlightuserdata(L,Splitter); //put pointer of Splitter to stack
-  return 1;//return 1 value (handle)
+  //lua_pushlightuserdata(L,Splitter); //put pointer of Splitter to stack
+  //return 1;//return 1 value (handle)
+  return PushObject(L,Splitter);
 }
 
 static int do_CreateButton(lua_State *L) //btn=gui.New_Button(parent,"caption") --parent can be 0
@@ -103,22 +137,27 @@ static int do_CreateButton(lua_State *L) //btn=gui.New_Button(parent,"caption") 
 
   LuaButton *Button=new LuaButton(L,GTK_WIDGET(iParent),caption);
   
-  lua_pushlightuserdata(L,Button); //put pointer of Button to stack
-  return 1;//return 1 value (handle)
+  //lua_pushlightuserdata(L,Button); //put pointer of Button to stack
+  //return 1;//return 1 value (handle)
+  return PushObject(L,Button);
 }
 
 static int do_CreatePopup(lua_State *L) //popup=gui.New_Popup(parent)
 {
   void *iParent=lua_touserdata(L,1);
-  GtkWidget *P=reinterpret_cast<GtkControl*>(iParent)->GetWidget();
+//  GtkWidget *P=reinterpret_cast<GtkControl*>(iParent)->GetWidget();
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iParent);
+  GtkControl *Control=reinterpret_cast<GtkControl*>(lc->Ctl);
+  GtkWidget *P=Control->GetWidget();
   
 //  g_print("Adding Popup to Parent 0x%x...\n",int(P));
 
   LuaPopupMenu *Popup=new LuaPopupMenu(L,GTK_WIDGET(P));
   
 //  g_print("Popup-Widget: %x\n",int(Popup->GetWidget()));
-  lua_pushlightuserdata(L,Popup); //put pointer of Popup to stack
-  return 1;//return 1 value (handle)
+  //lua_pushlightuserdata(L,Popup); //put pointer of Popup to stack
+  //return 1;//return 1 value (handle)
+  return PushObject(L,Popup);
 }
 
 static int do_CreateRadioGroup(lua_State *L) //rg=gui.New_RadioGroup(parent,"caption") --parent can be 0
@@ -131,8 +170,10 @@ static int do_CreateRadioGroup(lua_State *L) //rg=gui.New_RadioGroup(parent,"cap
   LuaRadioGroup *Radiogroup=new LuaRadioGroup(L,GTK_WIDGET(iParent),caption);
   
 //  g_print("RadioGroup-Widget: %x\n",int(Radiogroup->GetWidget()));
-  lua_pushlightuserdata(L,Radiogroup); //put pointer of RadioGroup to stack
-  return 1;//return 1 value (handle)
+  //lua_pushlightuserdata(L,Radiogroup); //put pointer of RadioGroup to stack
+  //return 1;//return 1 value (handle)
+  
+  return PushObject(L,Radiogroup);
 }
 
 static int do_CreateCheckGroup(lua_State *L) //cg=gui.New_CheckGroup(parent,"caption") --parent can be 0
@@ -145,8 +186,9 @@ static int do_CreateCheckGroup(lua_State *L) //cg=gui.New_CheckGroup(parent,"cap
   LuaCheckGroup *Checkgroup=new LuaCheckGroup(L,GTK_WIDGET(iParent),caption);
   
   //g_print("CheckGroup-Widget: %x\n",int(Checkgroup->GetWidget()));
-  lua_pushlightuserdata(L,Checkgroup); //put pointer of CheckGroup to stack
-  return 1;//return 1 value (handle)
+  //lua_pushlightuserdata(L,Checkgroup); //put pointer of CheckGroup to stack
+  //return 1;//return 1 value (handle)
+  return PushObject(L,Checkgroup);
 }
 
 static int do_CreateEdit(lua_State *L) //edit=gui.New_Edit(parent,"label") --parent can be 0
@@ -158,8 +200,9 @@ static int do_CreateEdit(lua_State *L) //edit=gui.New_Edit(parent,"label") --par
   LuaEdit *Edit=new LuaEdit(L,GTK_WIDGET(iParent),label);
   
   //g_print("Edit-Widget: %x\n",int(Edit->GetWidget()));
-  lua_pushlightuserdata(L,Edit); //put pointer of RadioGroup to stack
-  return 1;//return 1 value (handle)
+  //lua_pushlightuserdata(L,Edit); //put pointer of RadioGroup to stack
+  //return 1;//return 1 value (handle)
+  return PushObject(L,Edit);
 }
 
 static int do_CreateMemo(lua_State *L) //memo=gui.New_Memo(parent) --parent can be 0
@@ -171,8 +214,9 @@ static int do_CreateMemo(lua_State *L) //memo=gui.New_Memo(parent) --parent can 
   LuaMemo *Memo=new LuaMemo(L,GTK_WIDGET(iParent));
   
   //g_print("Memo-Widget: %x\n",int(Memo->GetWidget()));
-  lua_pushlightuserdata(L,Memo); //put pointer of Memo to stack
-  return 1;//return 1 value (handle)
+  //lua_pushlightuserdata(L,Memo); //put pointer of Memo to stack
+  //return 1;//return 1 value (handle)
+  return PushObject(L,Memo);
 }
 
 
@@ -183,8 +227,11 @@ static int do_PageControlAddPage(lua_State *L) //tab=gui.Pagecontrol_Add_Page(pa
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
 
-  LuaPageControl *PageControl=reinterpret_cast<LuaPageControl*>(iLuaControl);
-  void *vbox=PageControl->AddPage(caption,-1);
+  //LuaPageControl *PageControl=reinterpret_cast<LuaPageControl*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaPageControl *Control=reinterpret_cast<LuaPageControl*>(lc->Ctl);
+
+  void *vbox=Control->AddPage(caption,-1);
   lua_pushlightuserdata(L,vbox);//put pointer of vbox on stack
   return 1;//return 1 value (handle to vbox)
 }
@@ -194,7 +241,8 @@ static int do_ListViewAddColumn(lua_State *L) //gui.Listview_Add_Column(Listview
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
 
-  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaListView *Listview=reinterpret_cast<LuaListView*>(lc->Ctl);
   Listview->AddColumn(caption);
   return 0;//return no value
 }
@@ -204,9 +252,9 @@ static int do_ListViewAddItem(lua_State *L) //row=gui.Listview_Add_Item(Listview
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
 
-  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
-//  GtkTreeIter iter=Listview->AddItem(caption);
-//  int row=Listview->GetRowFromIter(iter);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaListView *Listview=reinterpret_cast<LuaListView*>(lc->Ctl);//iLuaControl);
+//  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
   int row=Listview->AddNewItem(caption);
   lua_pushinteger(L,row);//put rownumber on stack
   return 1;//return 1 value (row)
@@ -220,7 +268,9 @@ static int do_ListViewSetItem(lua_State *L) //gui.Listview_Set_Item(listview,row
   const char *caption=luaL_checkstring(L,4);
   //int ArgumentCount = lua_gettop(L);
 
-  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaListView *Listview=reinterpret_cast<LuaListView*>(lc->Ctl);
+//  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
   Listview->SetValue(row,col,caption);
   return 0;
 }
@@ -230,7 +280,9 @@ static int do_ListViewGetText(lua_State *L) //gui.Listview_Get_Text(listview,row
   void *iLuaControl=lua_touserdata(L,1);
   int row=luaL_checkinteger(L,2);
   int col=luaL_checkinteger(L,3);
-  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaListView *Listview=reinterpret_cast<LuaListView*>(lc->Ctl);
+//  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
   Listview->GetText(row,col); //LuaListView pushes value to Stack
   return 1;
 }
@@ -238,7 +290,9 @@ static int do_ListViewGetText(lua_State *L) //gui.Listview_Get_Text(listview,row
 static int do_ListViewClear(lua_State *L) //gui.Listview_Clear(Listview)
 {
   void *iLuaControl=lua_touserdata(L,1);
-  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaListView *Listview=reinterpret_cast<LuaListView*>(lc->Ctl);
+//  LuaListView *Listview=reinterpret_cast<LuaListView*>(iLuaControl);
   g_print("clear listview\n");
   Listview->Clear();
   return 0;
@@ -250,9 +304,15 @@ static int do_SplitterSetClients(lua_State *L) //gui.Splitter_Set_Clients(Splitt
   void *iChild1=lua_touserdata(L,2);
   void *iChild2=lua_touserdata(L,3);
 
-  LuaSplitter *Splitter=reinterpret_cast<LuaSplitter*>(iLuaControl);
-  GtkWidget *C1=reinterpret_cast<GtkControl*>(iChild1)->GetWidget();
-  GtkWidget *C2=reinterpret_cast<GtkControl*>(iChild2)->GetWidget();
+//  LuaSplitter *Splitter=reinterpret_cast<LuaSplitter*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaSplitter *Splitter=reinterpret_cast<LuaSplitter*>(lc->Ctl);
+  LuaClass *lc_c1=reinterpret_cast<LuaClass*>(iChild1);
+  GtkWidget *C1=reinterpret_cast<GtkControl*>(lc_c1->Ctl)->GetWidget();
+  LuaClass *lc_c2=reinterpret_cast<LuaClass*>(iChild2);
+  GtkWidget *C2=reinterpret_cast<GtkControl*>(lc_c2->Ctl)->GetWidget();
+//  GtkWidget *C1=reinterpret_cast<GtkControl*>(iChild1)->GetWidget();
+//  GtkWidget *C2=reinterpret_cast<GtkControl*>(iChild2)->GetWidget();
   Splitter->SetClients(C1,C2);
   Splitter->SetStaticChild(0);
 
@@ -266,8 +326,10 @@ static int do_PopupAddItem(lua_State *L) //gui.Popup_Add_Item(Popup,caption,func
   const char *caption=luaL_checkstring(L,2);
 //  g_print("adding MenuItem %s to Popupmenu %x\n",caption,int(iLuaControl));
 
-  LuaPopupMenu *Popup=reinterpret_cast<LuaPopupMenu*>(iLuaControl);
+//  LuaPopupMenu *Popup=reinterpret_cast<LuaPopupMenu*>(iLuaControl);
 //  g_print("PopupClass:%x\n",int(Popup));
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaPopupMenu *Popup=reinterpret_cast<LuaPopupMenu*>(lc->Ctl);
   
   int ref;
   if (strcmp(caption,"")) //do not try to get reference for Separator-Elements
@@ -284,7 +346,9 @@ static int do_RadioGroupAddItem(lua_State *L) //gui.Radiogroup_Add_Item(Radiogro
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
 
-  LuaRadioGroup *Radiogroup=reinterpret_cast<LuaRadioGroup*>(iLuaControl);
+//  LuaRadioGroup *Radiogroup=reinterpret_cast<LuaRadioGroup*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaRadioGroup *Radiogroup=reinterpret_cast<LuaRadioGroup*>(lc->Ctl);
   Radiogroup->AddRadio(caption);
   return 0;
 }
@@ -292,7 +356,9 @@ static int do_RadioGroupAddItem(lua_State *L) //gui.Radiogroup_Add_Item(Radiogro
 static int do_RadioGroupGetChecked(lua_State *L) //gui.Radiogroup_Get_Checked(Radiogroup) returns integer
 {
   void *iLuaControl=lua_touserdata(L,1);
-  LuaRadioGroup *Radiogroup=reinterpret_cast<LuaRadioGroup*>(iLuaControl);
+//  LuaRadioGroup *Radiogroup=reinterpret_cast<LuaRadioGroup*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaRadioGroup *Radiogroup=reinterpret_cast<LuaRadioGroup*>(lc->Ctl);
   lua_pushinteger(L,Radiogroup->GetChecked());
   return 1;
 }
@@ -302,7 +368,9 @@ static int do_CheckGroupAddItem(lua_State *L) //gui.Checkgroup_Add_Item(Checkgro
   void *iLuaControl=lua_touserdata(L,1);
   const char *caption=luaL_checkstring(L,2);
 
-  LuaCheckGroup *Checkgroup=reinterpret_cast<LuaCheckGroup*>(iLuaControl);
+//  LuaCheckGroup *Checkgroup=reinterpret_cast<LuaCheckGroup*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaCheckGroup *Checkgroup=reinterpret_cast<LuaCheckGroup*>(lc->Ctl);
   Checkgroup->AddCheckBox(caption);
   return 0;
 }
@@ -312,7 +380,9 @@ static int do_CheckGroupIsChecked(lua_State *L) //gui.Checkgroup_Is_Checked(Chec
   void *iLuaControl=lua_touserdata(L,1);
   int index=luaL_checkinteger(L,2);
 
-  LuaCheckGroup *Checkgroup=reinterpret_cast<LuaCheckGroup*>(iLuaControl);
+//  LuaCheckGroup *Checkgroup=reinterpret_cast<LuaCheckGroup*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaCheckGroup *Checkgroup=reinterpret_cast<LuaCheckGroup*>(lc->Ctl);
   lua_pushboolean(L,Checkgroup->GetChecked(index));
   return 1;
 }
@@ -320,7 +390,9 @@ static int do_CheckGroupIsChecked(lua_State *L) //gui.Checkgroup_Is_Checked(Chec
 static int do_EditGetText(lua_State *L) //gui.Edit_Get_Text(Edit) returns string
 {
   void *iLuaControl=lua_touserdata(L,1);
-  LuaEdit *Edit=reinterpret_cast<LuaEdit*>(iLuaControl);
+//  LuaEdit *Edit=reinterpret_cast<LuaEdit*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaEdit *Edit=reinterpret_cast<LuaEdit*>(lc->Ctl);
   Edit->GetText(); //LuaEdit pushes value to Stack
   return 1;
 }
@@ -328,7 +400,9 @@ static int do_EditGetText(lua_State *L) //gui.Edit_Get_Text(Edit) returns string
 static int do_MemoGetText(lua_State *L) //gui.Memo_Get_Text(Memo) returns string
 {
   void *iLuaControl=lua_touserdata(L,1);
-  LuaMemo *Memo=reinterpret_cast<LuaMemo*>(iLuaControl);
+//  LuaMemo *Memo=reinterpret_cast<LuaMemo*>(iLuaControl);
+  LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
+  LuaMemo *Memo=reinterpret_cast<LuaMemo*>(lc->Ctl);
   Memo->GetText(); //LuaMemo pushes value to Stack
   return 1;
 }
@@ -392,7 +466,7 @@ static wchar_t** table_to_str_array(lua_State *L, int idx, int* psz = NULL)
     return p;
 }
 */
-
+/*
 static int do_SetEvent(lua_State *L)
 {
   void *iLuaControl=lua_touserdata(L,1);
@@ -404,11 +478,11 @@ static int do_SetEvent(lua_State *L)
   Set_Event(iLuaControl,evType,ref);
   return 0;
 }
+*/
 
-/*
 //TODO: removing redundant code
 
-static int do_SetOnClick//without parameter
+static int do_SetOnClick(lua_State *L)//without parameter
 {
   void *iLuaControl=lua_touserdata(L,1);
       
@@ -418,7 +492,7 @@ static int do_SetOnClick//without parameter
   return 0;
 }
 
-static int do_SetOnDoubleClick//parameter: new index
+static int do_SetOnDoubleClick(lua_State *L)//parameter: new index
 {
   void *iLuaControl=lua_touserdata(L,1);
       
@@ -428,7 +502,7 @@ static int do_SetOnDoubleClick//parameter: new index
   return 0;
 }
 
-static int do_SetOnChange//used for Pagecontrol-switch; new index
+static int do_SetOnChange(lua_State *L)//used for Pagecontrol-switch; new index
 {
   void *iLuaControl=lua_touserdata(L,1);
       
@@ -437,7 +511,7 @@ static int do_SetOnChange//used for Pagecontrol-switch; new index
   Set_Event(iLuaControl,evChange,ref);
   return 0;
 }
-*/
+
 
 static const luaL_reg R[] =
 {
@@ -470,7 +544,7 @@ static const luaL_reg R[] =
   { "Show_Info", do_ShowInfo },
   { "Show_Warning", do_ShowWarning },
   { "Show_Question", do_ShowQuestion },
-  { "Set_Event", do_SetEvent },
+//  { "Set_Event", do_SetEvent },
 //	{ "Set_OnClick", do_SetOnClick },//without parameter
 //	{ "Set_OnDoubleClick", do_SetOnDoubleClick },//parameter: new index
 //	{ "Set_OnChange", do_SetOnChange },//used for Pagecontrol-switch; new index
@@ -550,21 +624,160 @@ static const struct luaL_reg window_methods[] = {
 	{NULL, NULL},
 };
 
+static const struct luaL_reg ListView_f [] = 
+{
+  {"new", do_CreateListView},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg ListView_m [] = 
+{
+  { "Add_Column", do_ListViewAddColumn },
+  { "Add_Item", do_ListViewAddItem },
+  { "Set_Item", do_ListViewSetItem },
+  { "Get_Text", do_ListViewGetText },
+  { "Clear", do_ListViewClear },
+  
+  {"on_DblClick",do_SetOnDoubleClick},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg PageControl_f [] = 
+{
+  {"new", do_CreatePageControl},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg PageControl_m [] = 
+{
+	{ "Add_Page",	do_PageControlAddPage },
+	
+	{"on_Change", do_SetOnChange},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Splitter_f [] = 
+{
+  {"new", do_CreateSplitter},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Splitter_m [] = 
+{
+	{ "Set_Clients",	do_SplitterSetClients },
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Popup_f [] = 
+{
+  {"new", do_CreatePopup},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Popup_m [] = 
+{
+	{ "Add_Item",	do_PopupAddItem },
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Button_f [] = 
+{
+  {"new", do_CreateButton},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Button_m [] = 
+{
+  {"on_Click",do_SetOnClick},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg RadioGroup_f [] = 
+{
+  {"new", do_CreateRadioGroup},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg RadioGroup_m [] = 
+{
+	{ "Add_Item",	do_RadioGroupAddItem },
+	{ "Get_Checked", do_RadioGroupGetChecked },
+
+	{"on_Change", do_SetOnChange},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg CheckGroup_f [] = 
+{
+  {"new", do_CreateCheckGroup},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg CheckGroup_m [] = 
+{
+	{ "Add_Item",	do_CheckGroupAddItem },
+	{ "Is_Checked", do_CheckGroupIsChecked },
+
+	{"on_Change", do_SetOnChange},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Edit_f [] = 
+{
+  {"new", do_CreateEdit},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Edit_m [] = 
+{
+	{ "Get_Text", do_EditGetText },
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Memo_f [] = 
+{
+  {"new", do_CreateMemo},
+  {NULL, NULL}
+};
+
+static const struct luaL_reg Memo_m [] = 
+{
+	{ "Get_Text", do_MemoGetText },
+  {NULL, NULL}
+};
+
+void RegisterClass(lua_State *L,const char *name,const char *table,const luaL_reg *object_struct,const luaL_reg *method_struct)
+{
+    luaL_newmetatable(L, table);
+    lua_pushstring(L, "__index");
+    lua_pushvalue(L, -2);  /* pushes the metatable */
+    lua_settable(L, -3);  /* metatable.__index = metatable */
+    luaL_openlib(L, NULL, method_struct, 0); //first register Methods
+    luaL_openlib(L, name, object_struct, 0); //now register object 
+}
+
 extern "C" 
 {//__declspec(dllexport)
 	LUALIB_API int luaopen_gui(lua_State *L)
 	{
 	  luaL_register(L,"gui",R);
 	 
-		/*
-    //i have to get this WINDOW_CLASS with WinWrap working
-    //code taken from gui_ext.cpp by Steve Donovan
-    luaL_openlib (L, "gui", gui, 0);
-    luaL_newmetatable(L, WINDOW_CLASS);  // create metatable for window objects
-    lua_pushvalue(L, -1);  // push metatable
-    lua_setfield(L, -2, "__index");  // metatable.__index = metatable
-    luaL_register(L, NULL, window_methods);
-	 */
-	  return 1;
+//    luaL_newmetatable(L, "gui.ListView");
+//    lua_pushstring(L, "__index");
+//    lua_pushvalue(L, -2);  /* pushes the metatable */
+//    lua_settable(L, -3);  /* metatable.__index = metatable */
+//    luaL_openlib(L, NULL, ListView_m, 0); //first register Methods
+//    luaL_openlib(L, "ListView", ListView_f, 0); //now register object
+    RegisterClass(L,"ListView","gui.ListView",ListView_f,ListView_m);
+    RegisterClass(L,"PageControl","gui.PageControl",PageControl_f,PageControl_m);
+    RegisterClass(L,"Splitter","gui.Splitter",Splitter_f,Splitter_m);
+    RegisterClass(L,"Popup","gui.Popup",Popup_f,Popup_m);
+    RegisterClass(L,"Button","gui.Button",Button_f,Button_m);
+    RegisterClass(L,"RadioGroup","gui.RadioGroup",RadioGroup_f,RadioGroup_m);
+    RegisterClass(L,"CheckGroup","gui.CheckGroup",CheckGroup_f,CheckGroup_m);
+    RegisterClass(L,"Edit","gui.Popup",Edit_f,Edit_m);
+    RegisterClass(L,"Memo","gui.Memo",Memo_f,Memo_m);
+
+	  return 2;
 	}
 }

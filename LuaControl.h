@@ -1,3 +1,6 @@
+#ifndef LUACONTROL_H
+#define LUACONTROL_H
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
@@ -7,6 +10,8 @@ extern "C" {
 #include <gtk/gtk.h>
 #include <stdint.h>
 #include <string.h>
+
+#include "Control.h"
 
 enum
 {
@@ -38,3 +43,5 @@ class LuaControl
     //void SetControlType(int ct);
     //int GetControlType() {return ControlType;}
 };
+#endif
+

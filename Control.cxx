@@ -1,21 +1,21 @@
 #include "Control.h"
 
-Control::Control()
+CControl::CControl()
 {
 
 }
 
-Control::~Control()
+CControl::~CControl()
 {
 
 }
 
-void Control::SetType(int T)
+void CControl::SetType(int T)
 {
   fType=T;
 }
 
-int Control::GetType()
+int CControl::GetType()
 {
   return fType;
 }
