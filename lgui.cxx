@@ -10,7 +10,7 @@ extern "C" {
 #include <lualib.h>
 }
 
-#include <gtk/gtk.h>
+//#include <gtk/gtk.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -19,6 +19,13 @@ void *SidebarHandle=NULL;
 #include "LuaControls.h"
 #include "LuaEvents.h"
 #include "LuaObjects.h"
+
+int GetControlFromLuaPtr(void *LuaPointer)
+{
+  LuaClass *lc=reinterpret_cast<LuaClass*>(LuaPointer);
+  CControl *Ctl=reinterpret_cast<CControl*>(lc->Ctl);
+  return Ctl->GetControl();
+}
 
 static int do_InitSidebar(lua_State *L) //gui.InitSidebar(scite.GetSidebarHandle())
 {
@@ -32,11 +39,11 @@ static int do_InitSidebar(lua_State *L) //gui.InitSidebar(scite.GetSidebarHandle
 //creating controls
 static int do_CreatePageControl(lua_State *L) //pagecontrol=PageControl.new(parent) --parent can be 0
 {
-  void *iParent=lua_touserdata(L,1);
+  int iParent=int(lua_touserdata(L,1));
   
 //  g_print("Adding Pagecontrol to Parent 0x%x...\n",int(iParent));
 
-  LuaPageControl *PageControl=new LuaPageControl(L,GTK_WIDGET(iParent));
+  LuaPageControl *PageControl=new LuaPageControl(L,iParent);
   //lua_pushlightuserdata(L,PageControl);//put pointer of Pagecontrol to stack
   //return 1;//return 1 value (handle)
   return PushObject(L,PageControl);
@@ -44,11 +51,11 @@ static int do_CreatePageControl(lua_State *L) //pagecontrol=PageControl.new(pare
 
 static int do_CreateListView(lua_State *L) //lv=ListView.new(parent) --parent can be 0
 {
-  void *iParent=lua_touserdata(L,1);
+  int iParent=int(lua_touserdata(L,1));
   
 //  g_print("Adding Listview to Parent 0x%x...\n",int(iParent));
 
-  LuaListView *Listview=new LuaListView(L,GTK_WIDGET(iParent));
+  LuaListView *Listview=new LuaListView(L,iParent);
 //  g_print("Listview-Widget: %x\n",int(Listview->GetWidget()));
   //lua_pushlightuserdata(L,Listview);//put pointer of Listview to stack
   return PushObject(L,Listview);
@@ -57,12 +64,12 @@ static int do_CreateListView(lua_State *L) //lv=ListView.new(parent) --parent ca
 
 static int do_CreateSplitter(lua_State *L) //spl=Splitter.new(parent,bool vertical) --parent can be 0
 {
-  void *iParent=lua_touserdata(L,1);
+  int iParent=int(lua_touserdata(L,1));
   bool vertical=lua_toboolean(L,2);
   
 //  g_print("Adding Pagecontrol to Parent 0x%x...\n",int(iParent));
 
-  LuaSplitter *Splitter=new LuaSplitter(L,GTK_WIDGET(iParent),vertical);
+  LuaSplitter *Splitter=new LuaSplitter(L,iParent,vertical);
   //lua_pushlightuserdata(L,Splitter); //put pointer of Splitter to stack
   //return 1;//return 1 value (handle)
   return PushObject(L,Splitter);
@@ -70,12 +77,12 @@ static int do_CreateSplitter(lua_State *L) //spl=Splitter.new(parent,bool vertic
 
 static int do_CreateButton(lua_State *L) //btn=Button.new(parent,"caption") --parent can be 0
 {
-  void *iParent=lua_touserdata(L,1);
+  int iParent=int(lua_touserdata(L,1));
   const char *caption=luaL_checkstring(L,2);
   
 //  g_print("Adding Button to Parent 0x%x...\n",int(iParent));
 
-  LuaButton *Button=new LuaButton(L,GTK_WIDGET(iParent),caption);
+  LuaButton *Button=new LuaButton(L,iParent,caption);
   
   //lua_pushlightuserdata(L,Button); //put pointer of Button to stack
   //return 1;//return 1 value (handle)
@@ -86,13 +93,16 @@ static int do_CreatePopup(lua_State *L) //popup=Popup.new(parent)
 {
   void *iParent=lua_touserdata(L,1);
 //  GtkWidget *P=reinterpret_cast<GtkControl*>(iParent)->GetWidget();
-  LuaClass *lc=reinterpret_cast<LuaClass*>(iParent);
-  GtkControl *Control=reinterpret_cast<GtkControl*>(lc->Ctl);
-  GtkWidget *P=Control->GetWidget();
+  //LuaClass *lc=reinterpret_cast<LuaClass*>(iParent);
+  //GtkControl *Control=reinterpret_cast<GtkControl*>(lc->Ctl);
+  //int P=int(Control->GetWidget());
+  //CControl *Ctl=reinterpret_cast<CControl*>(lc->Ctl);
+  //int P=int(Ctl->GetControl());
+  int P=GetControlFromLuaPtr(iParent);
   
 //  g_print("Adding Popup to Parent 0x%x...\n",int(P));
 
-  LuaPopupMenu *Popup=new LuaPopupMenu(L,GTK_WIDGET(P));
+  LuaPopupMenu *Popup=new LuaPopupMenu(L,P);
   
 //  g_print("Popup-Widget: %x\n",int(Popup->GetWidget()));
   //lua_pushlightuserdata(L,Popup); //put pointer of Popup to stack
@@ -102,12 +112,12 @@ static int do_CreatePopup(lua_State *L) //popup=Popup.new(parent)
 
 static int do_CreateRadioGroup(lua_State *L) //rg=RadioGroup.new(parent,"caption") --parent can be 0
 {
-  void *iParent=lua_touserdata(L,1);
+  int iParent=int (lua_touserdata(L,1));
   const char *caption=luaL_checkstring(L,2);
   
 //  g_print("Adding RadioGroup to Parent 0x%x...\n",int(iParent));
 
-  LuaRadioGroup *Radiogroup=new LuaRadioGroup(L,GTK_WIDGET(iParent),caption);
+  LuaRadioGroup *Radiogroup=new LuaRadioGroup(L,iParent,caption);
   
 //  g_print("RadioGroup-Widget: %x\n",int(Radiogroup->GetWidget()));
   //lua_pushlightuserdata(L,Radiogroup); //put pointer of RadioGroup to stack
@@ -118,12 +128,12 @@ static int do_CreateRadioGroup(lua_State *L) //rg=RadioGroup.new(parent,"caption
 
 static int do_CreateCheckGroup(lua_State *L) //cg=CheckGroup.new(parent,"caption") --parent can be 0
 {
-  void *iParent=lua_touserdata(L,1);
+  int iParent=int(lua_touserdata(L,1));
   const char *caption=luaL_checkstring(L,2);
   
   //g_print("Adding CheckGroup to Parent 0x%x...\n",int(iParent));
 
-  LuaCheckGroup *Checkgroup=new LuaCheckGroup(L,GTK_WIDGET(iParent),caption);
+  LuaCheckGroup *Checkgroup=new LuaCheckGroup(L,iParent,caption);
   
   //g_print("CheckGroup-Widget: %x\n",int(Checkgroup->GetWidget()));
   //lua_pushlightuserdata(L,Checkgroup); //put pointer of CheckGroup to stack
@@ -133,11 +143,11 @@ static int do_CreateCheckGroup(lua_State *L) //cg=CheckGroup.new(parent,"caption
 
 static int do_CreateEdit(lua_State *L) //edit=Edit.new(parent,"label") --parent can be 0
 {
-  void *iParent=lua_touserdata(L,1);
+  int iParent=int(lua_touserdata(L,1));
   const char *label=luaL_checkstring(L,2);
   //g_print("Adding Edit to Parent 0x%x...\n",int(iParent));
 
-  LuaEdit *Edit=new LuaEdit(L,GTK_WIDGET(iParent),label);
+  LuaEdit *Edit=new LuaEdit(L,iParent,label);
   
   //g_print("Edit-Widget: %x\n",int(Edit->GetWidget()));
   //lua_pushlightuserdata(L,Edit); //put pointer of RadioGroup to stack
@@ -147,11 +157,11 @@ static int do_CreateEdit(lua_State *L) //edit=Edit.new(parent,"label") --parent 
 
 static int do_CreateMemo(lua_State *L) //memo=Memo.new(parent) --parent can be 0
 {
-  void *iParent=lua_touserdata(L,1);
+  int iParent=int(lua_touserdata(L,1));
   
   //g_print("Adding Memo to Parent 0x%x...\n",int(iParent));
 
-  LuaMemo *Memo=new LuaMemo(L,GTK_WIDGET(iParent));
+  LuaMemo *Memo=new LuaMemo(L,iParent);
   
   //g_print("Memo-Widget: %x\n",int(Memo->GetWidget()));
   //lua_pushlightuserdata(L,Memo); //put pointer of Memo to stack
@@ -247,12 +257,14 @@ static int do_SplitterSetClients(lua_State *L) //splitter:Set_Clients(Child1,Chi
 //  LuaSplitter *Splitter=reinterpret_cast<LuaSplitter*>(iLuaControl);
   LuaClass *lc=reinterpret_cast<LuaClass*>(iLuaControl);
   LuaSplitter *Splitter=reinterpret_cast<LuaSplitter*>(lc->Ctl);
+  /*
   LuaClass *lc_c1=reinterpret_cast<LuaClass*>(iChild1);
   GtkWidget *C1=reinterpret_cast<GtkControl*>(lc_c1->Ctl)->GetWidget();
   LuaClass *lc_c2=reinterpret_cast<LuaClass*>(iChild2);
   GtkWidget *C2=reinterpret_cast<GtkControl*>(lc_c2->Ctl)->GetWidget();
-//  GtkWidget *C1=reinterpret_cast<GtkControl*>(iChild1)->GetWidget();
-//  GtkWidget *C2=reinterpret_cast<GtkControl*>(iChild2)->GetWidget();
+  */
+  int C1=GetControlFromLuaPtr(iChild1);
+  int C2=GetControlFromLuaPtr(iChild2);
   Splitter->SetClients(C1,C2);
   Splitter->SetStaticChild(0);
 

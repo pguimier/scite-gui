@@ -114,8 +114,8 @@ void luacontrol_destroy(GtkWidget *widget, gpointer user_data)
   g_print("free ok...\n");
 }
 
-LuaPageControl::LuaPageControl(lua_State *l,GtkWidget *parent)
-  :CPageControl(parent),Lua(l)
+LuaPageControl::LuaPageControl(lua_State *l,int parent)
+  :CPageControl(GTK_WIDGET(parent)),Lua(l)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"ClassPointer",this);
   //g_object_set_data(G_OBJECT(this->GetWidget()),"ClassType",reinterpret_cast<void*>(Type_LuaPageControl));
@@ -134,8 +134,8 @@ void LuaPageControl::OnPageSwitch(int page_num)
   }
 }
 
-LuaListView::LuaListView(lua_State *l,GtkWidget *parent)
-  : CListView(parent),Lua(l)
+LuaListView::LuaListView(lua_State *l,int parent)
+  : CListView(GTK_WIDGET(parent)),Lua(l)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcListView)); //for Destroy
   SetType(cListView);
@@ -172,16 +172,21 @@ void LuaListView::OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col)
   }
 }
  
-LuaSplitter::LuaSplitter(lua_State *l,GtkWidget *parent,bool vertical)
-  :CSplitter(parent,vertical),Lua(l)
+LuaSplitter::LuaSplitter(lua_State *l,int parent,bool vertical)
+  :CSplitter(GTK_WIDGET(parent),vertical),Lua(l)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcSplitter)); //for Destroy
   SetType(cSplitter);
   g_signal_connect (this->GetWidget(), "destroy",G_CALLBACK (luacontrol_destroy), this);
 }
 
-LuaButton::LuaButton(lua_State *l,GtkWidget *parent,const char *caption)
-  :CButton(parent,caption),Lua(l)
+void LuaSplitter::SetClients(int Child1,int Child2)
+{
+  CSplitter::SetClients(GTK_WIDGET(Child1),GTK_WIDGET(Child2));
+}
+
+LuaButton::LuaButton(lua_State *l,int parent,const char *caption)
+  :CButton(GTK_WIDGET(parent),caption),Lua(l)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcButton)); //for Destroy
   SetType(cButton);
@@ -198,9 +203,9 @@ void LuaButton::OnClick()
   }
 }
 
-LuaPopupMenu::LuaPopupMenu(lua_State *l,GtkWidget *parent)
+LuaPopupMenu::LuaPopupMenu(lua_State *l,int parent)
 //  :LuaControl(l),CPopupMenu(parent)
-  :CPopupMenu(parent),Lua(l)
+  :CPopupMenu(GTK_WIDGET(parent)),Lua(l)
 {
   //Lua=LuaControl(l);
   //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcPopupMenu)); //for Destroy
@@ -220,8 +225,8 @@ void LuaPopupMenu::OnClick(GtkWidget *Menuitem,int ID)
     dispatch_ref(Lua.GetLuaState(),ID, 0);
 }
 
-LuaRadioGroup::LuaRadioGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first)
-  : CRadioGroup(parent,caption_of_first),Lua(l)
+LuaRadioGroup::LuaRadioGroup(lua_State *l,int parent,const char *caption_of_first)
+  : CRadioGroup(GTK_WIDGET(parent),caption_of_first),Lua(l)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
   SetType(cRadioGroup);
@@ -238,8 +243,8 @@ void LuaRadioGroup::OnChange(int selected)
   }
 }
 
-LuaCheckGroup::LuaCheckGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first)
-  : CCheckGroup(parent,caption_of_first),Lua(l)
+LuaCheckGroup::LuaCheckGroup(lua_State *l,int parent,const char *caption_of_first)
+  : CCheckGroup(GTK_WIDGET(parent),caption_of_first),Lua(l)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
   SetType(cCheckGroup);
@@ -257,8 +262,8 @@ void LuaCheckGroup::OnChange(GtkWidget *changed_item)
   }
 }
 
-LuaEdit::LuaEdit(lua_State *l,GtkWidget *parent,const char *label)
-  : CEdit(parent,label),Lua(l)
+LuaEdit::LuaEdit(lua_State *l,int parent,const char *label)
+  : CEdit(GTK_WIDGET(parent),label),Lua(l)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
   SetType(cEdit);
@@ -270,8 +275,8 @@ void LuaEdit::GetText()
   lua_pushstring(Lua.GetLuaState(),CEdit::GetText());
 }
 
-LuaMemo::LuaMemo(lua_State *l,GtkWidget *parent)
-  : CMemo(parent),Lua(l)
+LuaMemo::LuaMemo(lua_State *l,int parent)
+  : CMemo(GTK_WIDGET(parent)),Lua(l)
 {
   //g_object_set_data(G_OBJECT(this->GetWidget()),"WindowClass",reinterpret_cast<void*>(lcRadioGroup)); //for Destroy
   SetType(cMemo);

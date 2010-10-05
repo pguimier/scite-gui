@@ -12,8 +12,7 @@ class CSplitter:public GtkControl
   public:
     CSplitter(GtkWidget *parent,bool vertical);
     ~CSplitter();
-    void SetClients(GtkWidget *Child1,GtkWidget *Child2);
+    virtual void SetClients(GtkWidget *Child1,GtkWidget *Child2);
     void SetStaticChild(int c);
     void SetSplitterPosition(int p,bool SecondChild=false);
-
 };

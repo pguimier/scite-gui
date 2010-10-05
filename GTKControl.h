@@ -23,6 +23,7 @@ class GtkControl:public CControl
     virtual ~GtkControl();
     void SetWidget(GtkWidget *w);
     GtkWidget *GetWidget() {return widget;};
+    int GetControl() {return int(widget);};
     void SetParent(GtkWidget *Parent);
     void CheckSize(int width,int height);
     void OnResize(int width,int height);

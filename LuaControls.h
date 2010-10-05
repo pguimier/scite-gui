@@ -64,7 +64,7 @@ class LuaPageControl:/*public LuaControl,*/public CPageControl
   
   public:
     LuaControl Lua;
-    LuaPageControl(lua_State *l,GtkWidget *parent);
+    LuaPageControl(lua_State *l,int parent);
     virtual ~LuaPageControl() {};
     virtual void OnPageSwitch(int page_num);
 };
@@ -77,7 +77,7 @@ class LuaListView:/*public LuaControl,*/public CListView
   
   public:
     LuaControl Lua;
-    LuaListView(lua_State *l,GtkWidget *parent);
+    LuaListView(lua_State *l,int parent);
     virtual ~LuaListView() {};
     virtual void OnRowActivated(GtkTreePath *path,GtkTreeViewColumn  *col);
     virtual int AddNewItem(const char *caption);
@@ -92,8 +92,9 @@ class LuaSplitter:/*public LuaControl,*/public CSplitter
   
   public:
     LuaControl Lua;
-    LuaSplitter(lua_State *l,GtkWidget *parent,bool vertical);
+    LuaSplitter(lua_State *l,int parent,bool vertical);
     virtual ~LuaSplitter() {};
+    virtual void SetClients(int Child1,int Child2);
 };
 
 class LuaButton:/*public LuaControl,*/public CButton
@@ -104,7 +105,7 @@ class LuaButton:/*public LuaControl,*/public CButton
   
   public:
     LuaControl Lua;
-    LuaButton(lua_State *l,GtkWidget *parent,const char *caption);
+    LuaButton(lua_State *l,int parent,const char *caption);
     virtual ~LuaButton() {};
     virtual void OnClick();
 };
@@ -117,7 +118,7 @@ class LuaPopupMenu:/*public LuaControl,*/public CPopupMenu
   
   public:
     LuaControl Lua;
-    LuaPopupMenu(lua_State *l,GtkWidget *parent);
+    LuaPopupMenu(lua_State *l,int parent);
     virtual ~LuaPopupMenu() {};
     virtual void AddMenuItem(const char*caption,int ref);
     virtual void OnClick(GtkWidget *Menuitem,int ID);
@@ -131,7 +132,7 @@ class LuaRadioGroup:/*public LuaControl,*/public CRadioGroup
   
   public:
     LuaControl Lua;
-    LuaRadioGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first);
+    LuaRadioGroup(lua_State *l,int parent,const char *caption_of_first);
     virtual ~LuaRadioGroup() {};
     virtual void OnChange(int selected);
 };
@@ -144,7 +145,7 @@ class LuaCheckGroup:/*public LuaControl,*/public CCheckGroup
   
   public:
     LuaControl Lua;
-    LuaCheckGroup(lua_State *l,GtkWidget *parent,const char *caption_of_first);
+    LuaCheckGroup(lua_State *l,int parent,const char *caption_of_first);
     virtual ~LuaCheckGroup() {};
     virtual void OnChange(GtkWidget *changed_item);
 };
@@ -157,7 +158,7 @@ class LuaEdit:/*public LuaControl,*/public CEdit
   
   public:
     LuaControl Lua;
-    LuaEdit(lua_State *l,GtkWidget *parent,const char *label);
+    LuaEdit(lua_State *l,int parent,const char *label);
     virtual ~LuaEdit() {};
     void GetText();
     //virtual void OnChange(GtkWidget *changed_item);
@@ -171,7 +172,7 @@ class LuaMemo:/*public LuaControl,*/public CMemo
   
   public:
     LuaControl Lua;
-    LuaMemo(lua_State *l,GtkWidget *parent);
+    LuaMemo(lua_State *l,int parent);
     virtual ~LuaMemo() {};
     void GetText();
     //virtual void OnChange(GtkWidget *changed_item);

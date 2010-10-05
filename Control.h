@@ -32,5 +32,6 @@ class CControl
     virtual ~CControl();
     void SetType(int T);
     int GetType();
+    virtual int GetControl()=0;
 };
 #endif
