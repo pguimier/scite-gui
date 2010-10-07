@@ -7,6 +7,7 @@ make
 cd ../../scite/gtk
 make
 
+upx ../bin/SciTE
 #echo $(dirname $0)
 cp ../bin/SciTE $(dirname $0)
 
